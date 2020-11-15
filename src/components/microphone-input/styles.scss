@@ -1,0 +1,31 @@
+@import '../theme';
+@import '../consts';
+
+.outer,
+.middle,
+.inner {
+  border-radius: $soundbite-radius;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.outer {
+  user-select: none;
+  width: $soundbite-diameter;
+  height: $soundbite-diameter;
+  background-color: var(--medium);
+}
+
+.middle {
+  background-color: $hazy-red;
+}
+
+.inner {
+  background-color: var(--dark);
+  color: var(--light);
+  border: 1px solid $hazy-red;
+  width: $mic-icon-diameter;
+  height: $mic-icon-diameter;
+  font-size: 1.5em;
+}

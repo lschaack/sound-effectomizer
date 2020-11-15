@@ -1,0 +1,114 @@
+@import '../theme.scss';
+
+p {
+  margin: 0;
+}
+
+label {
+  user-select: none;
+}
+
+.effectContainer {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 1;
+
+  button {
+    margin: 0;
+    border: 0;
+    background-color: var(--background);
+    color: var(--text);
+  }
+}
+
+.expandToggle {
+  cursor: pointer;
+}
+
+.radioInputs {
+  display: flex;
+  align-self: stretch;
+  justify-content: stretch;
+  font-size: 0.9em;
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  > div > label {
+    font-weight: 300;
+  }
+}
+
+.inputWrapper {
+  /* Width of material icon + combined l/r margin + column-gap */
+  margin-left: calc(24px + 7px + 1rem);
+  display: flex;
+  // flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 1;
+  column-gap: 1rem;
+  overflow: hidden;
+  margin-top: 0.5rem;
+
+  transition: height 0.15s ease-out, margin-top 0.15s ease-out;
+
+  &.closed {
+    margin-top: 0;
+    height: 0;
+  }
+
+  label {
+    font-weight: 500;
+  }
+}
+
+.configRow {
+  display: flex;
+  column-gap: 1rem;
+
+  > div:last-child {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+.rangeInputs {
+  display: flex;
+  align-items: flex-end;
+}
+
+.rangeGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  > input[type=range] {
+    width: 4rem;
+    appearance: slider-vertical;
+  }
+
+  > label {
+    font-size: 0.9em;
+  }
+
+  > div {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: space-between;
+  }
+
+  > div > input {
+    display: block;
+
+    rotate: 50%;
+  }
+
+  > div > label {
+    display: block;
+  }
+}

@@ -1,0 +1,26 @@
+@import '../consts';
+
+.soundbite {
+  font-family: inherit;
+
+  width: $soundbite-diameter;
+  height: $soundbite-diameter;
+
+  margin: $soundbite-margin;
+  border-radius: $soundbite-radius;
+  // background-color: rgb(120, 199, 237);
+  background-color: $hazy-brass;
+}
+
+.soundbite:focus {
+  outline: 0;
+  box-shadow: 0 0 0 2px blue;
+}
+
+.soundbite > span {
+  font-family: inherit;
+  font-weight: 700;
+  word-wrap: break-word;
+  display: inline-block;
+  max-width: 80%;
+}

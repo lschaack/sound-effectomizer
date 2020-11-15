@@ -1,0 +1,49 @@
+@import '../consts.scss';
+
+$trim-bar-width: 0.2rem;
+$trim-boundary-height: 1rem;
+
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+
+  p {
+    display: inline-block;
+    font-family: 'Roboto Mono';
+  }
+
+  .trimBar {
+    height: $trim-bar-width;
+    width: 100%;
+
+    border-radius: $trim-bar-width;
+    background-color: $hazy-blue;
+
+    display: flex;
+    align-items: center;
+
+    .playbackLocation {
+      position: absolute;
+      height: 1rem;
+      width: 1rem;
+      border-radius: 50%;
+      background-color: $hazy-red;
+    }
+
+    .trimBoundary {
+      height: $trim-boundary-height;
+      width: $trim-bar-width;
+      position: absolute;
+      border-radius: $trim-bar-width;
+      background-color: $hazy-red;
+      cursor: grab;
+      display: inline-block;
+
+      &:first-of-type {
+        transform: translateY(calc(#{$trim-bar-width} - #{$trim-boundary-height}));
+      }
+    }
+  }
+}

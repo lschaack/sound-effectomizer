@@ -1,0 +1,17 @@
+@import '../consts.scss';
+
+.hidden {
+  visibility: hidden;
+  position: absolute;
+}
+
+.fileSelector {
+  height: $soundbite-diameter;
+  width: $soundbite-diameter;
+  border-radius: $soundbite-radius;
+  background-color: $hazy-red;
+  font-size: 2em;
+
+  text-align: center;
+  line-height: $soundbite-diameter;
+}
