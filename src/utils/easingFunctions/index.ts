@@ -1,5 +1,8 @@
-import { Memoize } from "typescript-memoize";
-import { memoize } from "..";
+export const memoize = <ArgType extends Array<T>, ReturnType, T = any>(fn: (...args: ArgType) => ReturnType) => {
+  const memoized = new Map();
+
+  return (...args: ArgType) => memoized.get(args) || memoized.set(args, fn(...args)).get(args);
+};
 
 // https://joshondesign.com/2013/03/01/improvedEasingEquations
 export const easeInCubic = (t: number) => t ** 3;
@@ -26,6 +29,6 @@ export const easeInOutCubicInflection = memoize(
   }
 );
 
-const easeInOutSine = (x: number, t: number, b: number, c: number, d: number) => (
+export const easeInOutSine = (x: number, t: number, b: number, c: number, d: number) => (
   0.5 - Math.cos(Math.PI * x) / 2
 );

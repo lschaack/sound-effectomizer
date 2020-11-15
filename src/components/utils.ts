@@ -1,6 +1,12 @@
-import { normalizeToRange } from "utils/index";
+import clamp from "lodash-es/clamp";
 import { first, last } from "lodash-es";
 import { WINDOW_SIZE } from "./constants";
+
+export const normalizeToRange = (min: number, max: number, input: number) =>
+  clamp(input, 0, 1) * (max - min) + min;
+
+export const normalizeFromRange = (min: number, max: number, input: number) =>
+  (clamp(input, min, max) - min) / (max - min);
 
 export const getFrequencyFromTransposition = (transposition: number) => {
   const t = normalizeToRange(-0.5, 0.5, transposition);

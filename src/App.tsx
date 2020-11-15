@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 
-import styles from './styles.css';
 import { SoundEffectomizer } from 'components';
 
 // TODO: put this literally anywhere else

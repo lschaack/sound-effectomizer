@@ -1,5 +1,5 @@
 import { AudioIO, makeAudioIO } from "components/utils";
-import { normalizeToRange } from "utils/index";
+import { normalizeToRange } from "components/utils";
 
 export type DelayOptions = {
   depth: number;

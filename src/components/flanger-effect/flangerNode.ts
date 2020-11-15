@@ -1,5 +1,5 @@
 import { makeAudioIO, mixToDryWet, AudioIO } from "components/utils";
-import { normalizeToRange } from "utils/index";
+import { normalizeToRange } from "components/utils";
 
 export type FlangerOptions = {
   wave: OscillatorNode['type']; 

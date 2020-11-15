@@ -3,7 +3,7 @@ import { WINDOW_SIZE } from "../constants";
 import { createWarbleNode } from "../warble-effect";
 import { AudioIO, makeAudioIO } from "../utils";
 import { uniqueId } from "lodash-es";
-import { normalizeToRange } from "utils/index";
+import { normalizeToRange } from "components/utils";
 
 export type VibratoOptions = {
   transposition: number;
