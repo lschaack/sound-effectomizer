@@ -29,6 +29,6 @@ export const easeInOutCubicInflection = memoize(
   }
 );
 
-export const easeInOutSine = (x: number, t: number, b: number, c: number, d: number) => (
+export const easeInOutSine = (x: number) => (
   0.5 - Math.cos(Math.PI * x) / 2
 );
