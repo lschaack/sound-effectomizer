@@ -1,11 +1,12 @@
 import React, { FC, useState, useEffect, useRef, useCallback } from 'react';
 import cx from 'classnames';
 
-import styles from './styles.scss';
-import styleConsts from '../consts.scss';
-import { clamp, normalizeFromRange, normalizeToRange } from 'utils';
+import { normalizeFromRange, normalizeToRange } from '../utils';
 import { max } from 'lodash-es';
 import { easeInCubic } from 'utils/easingFunctions';
+
+import styles from './styles.scss';
+import styleConsts from '../consts.scss';
 
 const DECAY_RATE = 0.005; // in normalized volume units per millisecond
 const DECAY_TIME = 1 / DECAY_RATE; // in ms
