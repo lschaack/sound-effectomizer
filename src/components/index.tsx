@@ -10,17 +10,13 @@ import React, {
 
 import cx from 'classnames';
 
-import { Soundbite, SoundbiteProps } from './soundbite';
+import { Soundbite } from './soundbite';
 import { FileSelector } from './file-selector';
-import { AudioIO, chainAudioNodes } from './utils';
+import { AudioIO, chainAudioNodes, urlToAudioBuffer } from './utils';
 import { FlangerEffect } from './flanger-effect';
 import { DelayEffect } from './delay-effect';
 import { PitchEffect } from './pitch-effect';
-import { FlangerNode } from './flanger-effect/flangerNode';
-import { PitchNode } from './pitch-effect/pitchNode';
-import { DelayNode } from './delay-effect/delayNode';
 import { Oscilloscope } from './oscilloscope';
-import { VibratoNode } from './vibrato-effect/vibratoNode';
 import { VibratoEffect } from './vibrato-effect';
 import { MicrophoneInput } from './microphone-input';
 import { SoundbiteEditor } from './soundbite-editor';
@@ -48,44 +44,21 @@ import roo from 'assets/roo.mp3';
 import gatedPlace from 'assets/GATED-PLACE-E001-M2S.wav';
 import megaDiffusor from 'assets/MEGA-DIFFUSOR-E001-M2S.wav';
 import miniCaves from 'assets/MINI-CAVES-E001-M2S.wav';
+import { Context } from 'src/context';
+import { Soundbite as TSoundbite, useSoundbiteContext } from 'src/context/SoundbiteContext';
+import { useSoundEffectsContext } from 'src/context/SoundEffectsContext';
 
-const SOUNDBITES = {
-  elegiac,
-  bulbous,
-  yikes,
-  oof,
-  aorrrrer,
-  arooroorooroo,
-  cronch,
-  crybaby,
-  mrrhrr,
-  roo,
-  // euuhuh,
-  // rruuuh,
-  // grrr,
-  // heaghh,
-  // wohh,
-  // sleepyBork,
+const MP3_SRCS = {
+  elegiac, bulbous, yikes, oof, aorrrrer, arooroorooroo, cronch, crybaby, mrrhrr, roo,
+  // euuhuh, rruuuh, grrr, heaghh, wohh, sleepyBork,
 };
 
-const CONVOLVERS = {
-  gatedPlace,
-  megaDiffusor,
-  miniCaves
-};
+const CONVOLVERS = { gatedPlace, megaDiffusor, miniCaves };
 
 const context = new window.AudioContext();
 
-const fetchAudioBuffer = async (url: string) => {
-  const res = await fetch(url);
-  const encoded = await res.arrayBuffer();
-  const audioData = await context.decodeAudioData(encoded);
-
-  return audioData;
-};
-
-const fetchConvolver = async (url: string) => {
-  const audioBuffer = await fetchAudioBuffer(url);
+const fetchConvolver = async (context: AudioContext, url: string) => {
+  const audioBuffer = await urlToAudioBuffer(context, url);
   const convolver = context.createConvolver();
   convolver.normalize = true; // TODO: make setting?
   convolver.buffer = audioBuffer;
@@ -107,21 +80,28 @@ const playOnKeydown: KeyboardEventHandler = event => {
   }
 };
 
+export const App: FC = () => (
+  <Context>
+    <SoundEffectomizer />
+  </Context>
+);
+
 // TODO: make this only handle input, separate effectChain
-export const SoundEffectomizer: FC = () => {
-  const [ soundbites, setSoundbites ] = useState<SoundbiteProps[]>([]);
+const SoundEffectomizer: FC = () => {
+  const { soundbites, addSoundbite, addSoundbitesFromUrlMap } = useSoundbiteContext();
+  // const [ soundbites, setSoundbites ] = useState<SoundbiteProps[]>([]);
   const [ convolvers, setConvolvers ] = useState<ConvolverNode[]>([]);
-  
+
   const outputAnalyser = useMemo(() => context.createAnalyser(), []);
-  const [ convolver, setConvolver ] = useState<ConvolverNode>();
-  const [ flanger, setFlanger ] = useState<FlangerNode>();
-  const [ delay, setDelay ] = useState<DelayNode>();
-  const [ pitch, setPitch ] = useState<PitchNode>();
-  const [ vibrato, setVibrato ] = useState<VibratoNode>();
-  // TODO: effectChain doesn't seem to update on initial render, making this necessary
-  const [ effectChain, setEffectChain ] = useState<Maybe<AudioIO<any>>>(
-    chainAudioNodes(convolver, pitch, vibrato, delay, flanger, outputAnalyser)
-  );
+
+  const {
+    setConvolver,
+    setFlanger,
+    setDelay,
+    setPitch,
+    setVibrato,
+    effectChain,
+  } = useSoundEffectsContext();
 
   const [ currentBufferIndex, setCurrentBufferIndex ] = useState(0);
 
@@ -133,66 +113,12 @@ export const SoundEffectomizer: FC = () => {
       : undefined
   );
 
-  const getSoundbiteProps = useCallback(
-    (buffer: AudioBuffer): Omit<SoundbiteProps, 'onSelect'> => ({
-      buffer,
-      context,
-      effectChain,
-    }),
-    [effectChain]
-  );
-
-  useEffect(
-    () => {
-      console.log(
-        'setting effect chain w/',
-        'convolver', convolver,
-        'flanger', flanger,
-        'delay', delay,
-        'pitch', pitch,
-        'vibrato', vibrato,
-      );
-
-      setEffectChain(chainAudioNodes(pitch, convolver, flanger, vibrato, delay, outputAnalyser));
-    },
-    [convolver, flanger, delay, pitch, vibrato, outputAnalyser]
-  );
-
-  useEffect( // Pass global settings to all soundbites when changed
-    () => setSoundbites(soundbites.map(({ name, buffer }, index) => ({
-      name,
-      onSelect: () => setCurrentBufferIndex(index),
-      ...getSoundbiteProps(buffer)
-    }))),
-    [effectChain] // eslint-disable-line
-  );
-
-  const addSoundbite = useCallback(
-    (newBuffer?: AudioBuffer, name?: string) => {
-      if (newBuffer) {
-        setSoundbites(prevBuffers => [
-          ...prevBuffers,
-          {
-            name: name ?? Math.random().toString(),
-            // FIXME: not sure if this is gonna be the right index
-            onSelect: () => setCurrentBufferIndex(prevBuffers.length),
-            ...getSoundbiteProps(newBuffer),
-          }
-        ]);
-      }
-    },
-    [getSoundbiteProps]
-  );
-
   // Load default soundbites
-  useEffect(() => Object.entries(SOUNDBITES).forEach(async ([ name, filename ]) =>
-    addSoundbite(await fetchAudioBuffer(filename), name)
-    // should only run once to load
-  ), []); // eslint-disable-line
+  useEffect(() => addSoundbitesFromUrlMap(MP3_SRCS), []);
 
   // Load default reverbs
   useEffect(() => Object.values(CONVOLVERS).forEach(filename =>
-    fetchConvolver(filename).then(convolver =>
+    fetchConvolver(context, filename).then(convolver =>
       setConvolvers(prevConvolvers =>
         prevConvolvers.concat([convolver])
       )
@@ -227,10 +153,10 @@ export const SoundEffectomizer: FC = () => {
               })}
             </select>
           </div>
-          <FlangerEffect {...{ context, setFlanger }} />
-          <VibratoEffect {...{ context, setVibrato }} />
-          <DelayEffect {...{ context, setDelay }} />
-          <PitchEffect {...{ context, setPitch }} />
+          <FlangerEffect setFlanger={setFlanger} />
+          <VibratoEffect setVibrato={setVibrato} />
+          <DelayEffect setDelay={setDelay} />
+          <PitchEffect setPitch={setPitch} />
         </div>
         <div
           className={styles.soundboard}
@@ -241,14 +167,15 @@ export const SoundEffectomizer: FC = () => {
         >
           <Oscilloscope analyser={outputAnalyser} />
           <MicrophoneInput context={context} onMicSourceChange={connectMicSourceToOutput} />
-          {soundbites.map((props, index) =>
+          {soundbites.map((soundbite, index) =>
             <Soundbite
               key={`soundbite-${index}`}
-              {...props}
+              onSelect={() => setCurrentBufferIndex(index)}
+              soundbite={soundbite}
             />)
           }
           <FileSelector context={context} onSelect={addSoundbite} />
-          <SoundbiteEditor
+          {/* <SoundbiteEditor
             context={context}
             buffer={soundbites[currentBufferIndex]?.buffer}
             onChange={buffer => {
@@ -270,7 +197,7 @@ export const SoundEffectomizer: FC = () => {
                 )));
               }
             }}
-          />
+          /> */}
         </div>
       </div>
     </div>

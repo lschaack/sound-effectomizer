@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
+import { StateSetter } from 'src/context/types';
 
 import { EffectConfig } from '../effect-config';
 import { FlangerOptions, createFlangerNode, FlangerNode } from './flangerNode';
 
 type TProps = {
-  context: AudioContext;
-  setFlanger: (flanger: Maybe<FlangerNode>) => void;
+  setFlanger: StateSetter<Maybe<FlangerNode>>;
 }
 
 const defaultOptions: FlangerOptions = {
@@ -17,9 +17,8 @@ const defaultOptions: FlangerOptions = {
   mix: 0.5,
 };
 
-export const FlangerEffect: FC<TProps> = ({ context, setFlanger }) => (
+export const FlangerEffect: FC<TProps> = ({ setFlanger }) => (
   <EffectConfig<FlangerOptions>
-    context={context}
     createEffectNode={createFlangerNode}
     effectName="flanger"
     onChange={setFlanger}

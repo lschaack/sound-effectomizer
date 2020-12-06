@@ -1,19 +1,21 @@
 import React, { FC, useEffect, useRef } from 'react';
 
 import styles from './styles.scss';
-import { AudioIO, isIO, chainAudioNodes } from '../utils';
+import { chainAudioNodes } from '../utils';
+import { useAudioContext } from 'src/context/AudioContext';
+import { Soundbite as TSoundbite } from 'src/context/SoundbiteContext';
+import { useSoundEffectsContext } from 'src/context/SoundEffectsContext';
 
 export type SoundbiteProps = {
-  context: AudioContext;
-  buffer: AudioBuffer;
-  effectChain?: AudioIO<any>;
-  name?: string;
+  soundbite: TSoundbite;
   onSelect: () => void;
 };
 
 export const Soundbite: FC<SoundbiteProps> = ({
-  buffer, name, context, effectChain, onSelect
+  soundbite: { buffer, name }, onSelect
 }) => {
+  const { context } = useAudioContext();
+  const { effectChain } = useSoundEffectsContext();
   const source = useRef<AudioBufferSourceNode>();
 
   const handleClick = () => {

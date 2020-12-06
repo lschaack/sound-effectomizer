@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 
-import { SoundEffectomizer } from 'components';
+import { App } from 'components';
 
 // TODO: put this literally anywhere else
 Object.defineProperty(
@@ -12,4 +12,4 @@ Object.defineProperty(
   }
 );
 
-ReactDom.render(<SoundEffectomizer />, document.getElementById('root'));
+ReactDom.render(<App />, document.getElementById('root'));

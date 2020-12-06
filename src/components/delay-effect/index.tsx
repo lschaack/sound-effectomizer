@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 
+import { StateSetter } from 'src/context/types';
 import { EffectConfig } from '../effect-config';
 import { DelayOptions, createDelayNode, DelayNode } from './delayNode';
 
 type TProps = {
-  context: AudioContext;
-  setDelay: (delay: Maybe<DelayNode>) => void;
+  setDelay: StateSetter<Maybe<DelayNode>>;
 }
 
 const defaultOptions: DelayOptions = {
@@ -13,9 +13,8 @@ const defaultOptions: DelayOptions = {
   depth: 0.5,
 };
 
-export const DelayEffect: FC<TProps> = ({ context, setDelay }) => (
+export const DelayEffect: FC<TProps> = ({ setDelay }) => (
   <EffectConfig<DelayOptions>
-    context={context}
     createEffectNode={createDelayNode}
     effectName="delay"
     onChange={setDelay}

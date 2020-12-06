@@ -14,9 +14,9 @@ import { AudioIO } from '../utils';
 import styles from './styles.scss';
 import parentStyles from '../styles.scss';
 import { groupBy } from 'lodash-es';
+import { useAudioContext } from 'src/context/AudioContext';
 
 type TProps<Options> = {
-  context: AudioContext;
   createEffectNode: (context: AudioContext, options: Options) => AudioIO<Options>;
   effectName: string;
   defaultOptions: Options;
@@ -39,7 +39,6 @@ type TProps<Options> = {
 }
 
 export const EffectConfig = <Options extends {}>({
-  context,
   createEffectNode,
   onChange,
   defaultOptions,
@@ -47,6 +46,8 @@ export const EffectConfig = <Options extends {}>({
   rangeParams,
   radioParams,
 }: TProps<Options>) => {
+  const { context } = useAudioContext();
+
   const [ options, setOptions ] = useState(defaultOptions);
   const [ expanded, setExpanded ] = useState(false);
   const optionToggle = useRef<HTMLInputElement>(null);

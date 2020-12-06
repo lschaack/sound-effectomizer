@@ -92,3 +92,11 @@ export const chainAudioNodes = (
     () => { throw new Error("Can't set options on chained nodes"); },
   );
 };
+
+export const urlToAudioBuffer = async (context: AudioContext, url: string) => {
+  const res = await fetch(url);
+  const encoded = await res.arrayBuffer();
+  const audioData = await context.decodeAudioData(encoded);
+
+  return audioData;
+};
