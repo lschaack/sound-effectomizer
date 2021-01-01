@@ -44,9 +44,9 @@ import roo from 'assets/roo.mp3';
 import gatedPlace from 'assets/GATED-PLACE-E001-M2S.wav';
 import megaDiffusor from 'assets/MEGA-DIFFUSOR-E001-M2S.wav';
 import miniCaves from 'assets/MINI-CAVES-E001-M2S.wav';
-import { Context } from 'src/context';
-import { Soundbite as TSoundbite, useSoundbiteContext } from 'src/context/SoundbiteContext';
-import { useSoundEffectsContext } from 'src/context/SoundEffectsContext';
+import { Context } from 'context';
+import { Soundbite as TSoundbite, useSoundbiteContext } from 'context/SoundbiteContext';
+import { useSoundEffectsContext } from 'context/SoundEffectsContext';
 
 const MP3_SRCS = {
   elegiac, bulbous, yikes, oof, aorrrrer, arooroorooroo, cronch, crybaby, mrrhrr, roo,

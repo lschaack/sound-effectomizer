@@ -17,12 +17,12 @@ import { StateSetter } from './types';
 
 type TSoundEffectsContext = {
   effectChain: Maybe<AudioIO<any>>;
-  setConvolver: StateSetter<Maybe<ConvolverNode>>,
-  setFlanger: StateSetter<Maybe<FlangerNode>>,
-  setDelay: StateSetter<Maybe<DelayNode>>,
-  setPitch: StateSetter<Maybe<PitchNode>>,
-  setVibrato: StateSetter<Maybe<VibratoNode>>,
-  outputAnalyser: Maybe<AnalyserNode>,
+  setConvolver: StateSetter<Maybe<ConvolverNode>>;
+  setFlanger: StateSetter<Maybe<FlangerNode>>;
+  setDelay: StateSetter<Maybe<DelayNode>>;
+  setPitch: StateSetter<Maybe<PitchNode>>;
+  setVibrato: StateSetter<Maybe<VibratoNode>>;
+  outputAnalyser: Maybe<AnalyserNode>;
 };
 
 const DEFAULT_SOUND_EFFECT_CONTEXT = {
@@ -41,7 +41,7 @@ SoundEffectsContext.displayName = 'SoundEffectsContext';
 export const SoundEffectsContextProvider: FC = ({ children }) => {
   const { context } = useAudioContext();
 
-  const outputAnalyser = useMemo(() => context.createAnalyser(), []);
+  const outputAnalyser = useMemo(() => context.createAnalyser(), [context]);
   const [ convolver, setConvolver ] = useState<ConvolverNode>();
   const [ flanger, setFlanger ] = useState<FlangerNode>();
   const [ delay, setDelay ] = useState<DelayNode>();
@@ -73,7 +73,7 @@ export const SoundEffectsContextProvider: FC = ({ children }) => {
     >
       {children}
     </SoundEffectsContext.Provider>
-  )
+  );
 };
 
 export const useSoundEffectsContext = () => useContext(SoundEffectsContext);

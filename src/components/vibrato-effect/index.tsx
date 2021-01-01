@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { StateSetter } from 'src/context/types';
+import { StateSetter } from 'context/types';
 
 import { EffectConfig } from '../effect-config';
 import { createVibratoNode, VibratoNode, VibratoOptions } from './vibratoNode';

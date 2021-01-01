@@ -14,7 +14,7 @@ import { AudioIO } from '../utils';
 import styles from './styles.scss';
 import parentStyles from '../styles.scss';
 import { groupBy } from 'lodash-es';
-import { useAudioContext } from 'src/context/AudioContext';
+import { useAudioContext } from 'context/AudioContext';
 
 type TProps<Options> = {
   createEffectNode: (context: AudioContext, options: Options) => AudioIO<Options>;
