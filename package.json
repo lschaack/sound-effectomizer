@@ -12,7 +12,8 @@
     "s": "yarn start"
   },
   "dependencies": {
-    "lodash-es": "^4.17.15",
+    "@types/lodash": "^4.14.168",
+    "lodash": "^4.17.20",
     "react": "^16.8.6",
     "react-dnd": "^11.1.3",
     "react-dom": "^16.8.6",
@@ -20,7 +21,6 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.2.10",
-    "@types/lodash-es": "^4.17.3",
     "@types/react": "^16.8.23",
     "@types/react-dom": "^16.8.4",
     "@typescript-eslint/eslint-plugin": "^2.19.0",

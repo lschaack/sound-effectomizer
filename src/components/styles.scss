@@ -114,8 +114,8 @@ h2 {
   grid-gap: 1rem;
   width: 100%;
 
-  > canvas:first-child,
-  > div:last-child {
+  // > div:last-child, // TODO: re-enable when soundbite editor is back
+  > canvas:first-child {
     grid-column: 1 / -1;
   }
 }

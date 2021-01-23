@@ -1,4 +1,4 @@
-import { uniqueId } from "lodash-es";
+import uniqueId from "lodash/uniqueId";
 import { AudioIO, makeAudioIO } from "components/utils";
 import { createCrossfadeNode } from "../crossfade-effect";
 import { createWarbleNode } from "../warble-effect";

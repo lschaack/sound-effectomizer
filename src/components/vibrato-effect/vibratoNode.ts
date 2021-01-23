@@ -2,7 +2,7 @@ import { getFrequencyFromTransposition } from "../utils";
 import { WINDOW_SIZE } from "../constants";
 import { createWarbleNode } from "../warble-effect";
 import { AudioIO, makeAudioIO } from "../utils";
-import { uniqueId } from "lodash-es";
+import uniqueId from "lodash/uniqueId";
 import { normalizeToRange } from "components/utils";
 
 export type VibratoOptions = {

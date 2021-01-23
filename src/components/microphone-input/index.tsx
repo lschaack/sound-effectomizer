@@ -2,7 +2,7 @@ import React, { FC, useState, useEffect, useRef, useCallback } from 'react';
 import cx from 'classnames';
 
 import { normalizeFromRange, normalizeToRange } from '../utils';
-import { max } from 'lodash-es';
+import max from 'lodash/max';
 import { easeInCubic } from 'utils/easingFunctions';
 
 import styles from './styles.scss';

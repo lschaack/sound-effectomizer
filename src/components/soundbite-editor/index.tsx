@@ -1,7 +1,9 @@
 import React, { DragEventHandler, FC, useCallback, useMemo, useRef, useState } from 'react';
 import cx from 'classnames';
 
-import { clamp, debounce, range } from 'lodash-es';
+import clamp from 'lodash/clamp';
+import debounce from 'lodash/debounce';
+import range from 'lodash/range';
 
 import styles from './styles.scss';
 

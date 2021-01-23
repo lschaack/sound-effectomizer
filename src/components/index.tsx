@@ -92,8 +92,6 @@ const SoundEffectomizer: FC = () => {
   // const [ soundbites, setSoundbites ] = useState<SoundbiteProps[]>([]);
   const [ convolvers, setConvolvers ] = useState<ConvolverNode[]>([]);
 
-  const outputAnalyser = useMemo(() => context.createAnalyser(), []);
-
   const {
     setConvolver,
     setFlanger,
@@ -101,6 +99,7 @@ const SoundEffectomizer: FC = () => {
     setPitch,
     setVibrato,
     effectChain,
+    outputAnalyser
   } = useSoundEffectsContext();
 
   const [ currentBufferIndex, setCurrentBufferIndex ] = useState(0);
@@ -114,6 +113,7 @@ const SoundEffectomizer: FC = () => {
   );
 
   // Load default soundbites
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => addSoundbitesFromUrlMap(MP3_SRCS), []);
 
   // Load default reverbs

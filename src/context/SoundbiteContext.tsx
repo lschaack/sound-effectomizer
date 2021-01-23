@@ -34,11 +34,11 @@ export const SoundbiteContextProvider: FC = ({ children }) => {
     if (buffer) updateSoundbites(
       soundbites.concat({ name: name ?? Math.random().toString(), buffer })
     );
-  }
+  };
 
   const addSoundbitesFromUrlMap: TSoundbiteContext['addSoundbitesFromUrlMap'] = async nameToUrl =>
     // Map { [name]: url } to [{ name, buffer }]
-    updateSoundbites(soundbites.concat(
+    void updateSoundbites(soundbites.concat(
       await Promise.all(Object.entries(nameToUrl).map<Promise<Soundbite>>(
         async ([ name, filename ]) => ({
           name,
@@ -53,7 +53,7 @@ export const SoundbiteContextProvider: FC = ({ children }) => {
     >
       {children}
     </SoundbiteContext.Provider>
-  )
+  );
 };
 
 export const useSoundbiteContext = () => useContext(SoundbiteContext);

@@ -7,13 +7,13 @@ import React, {
   InputHTMLAttributes
 } from 'react';
 import cx from 'classnames';
-import debounce from 'lodash-es/debounce';
+import debounce from 'lodash/debounce';
 
 import { AudioIO } from '../utils';
 
 import styles from './styles.scss';
 import parentStyles from '../styles.scss';
-import { groupBy } from 'lodash-es';
+import groupBy from 'lodash/groupBy';
 import { useAudioContext } from 'context/AudioContext';
 
 type TProps<Options> = {

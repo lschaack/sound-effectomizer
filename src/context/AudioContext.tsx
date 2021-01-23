@@ -15,6 +15,6 @@ export const AudioContextProvider: FC = ({ children }) => (
   <AudioContext.Provider value={DEFAULT_AUDIO_CONTEXT}>
     {children}
   </AudioContext.Provider>
-)
+);
 
 export const useAudioContext = () => useContext(AudioContext);

@@ -1,5 +1,6 @@
-import clamp from "lodash-es/clamp";
-import { first, last } from "lodash-es";
+import clamp from "lodash/clamp";
+import first from "lodash/first";
+import last from "lodash/last";
 import { WINDOW_SIZE } from "./constants";
 
 export const normalizeToRange = (min: number, max: number, input: number) =>

@@ -4,7 +4,7 @@ import styles from './styles.scss';
 import styleConsts from '../consts.scss';
 
 type OscilloscopeProps = {
-  analyser: AnalyserNode;
+  analyser?: AnalyserNode;
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode
@@ -12,7 +12,7 @@ export const Oscilloscope: FC<OscilloscopeProps> = ({ analyser }) => {
   const [ canvas, setCanvas ] = useState<HTMLCanvasElement>();
   const [ context, setContext ] = useState<CanvasRenderingContext2D | null | undefined>();
   const prevCurveData = useRef<Uint8Array>(new Uint8Array());
-  const bufferLength = useMemo(() => analyser.frequencyBinCount, [analyser]);
+  const bufferLength = useMemo(() => analyser?.frequencyBinCount ?? 0, [analyser]);
   const dataArray = useMemo(() => new Uint8Array(bufferLength), [bufferLength]);
 
   // Callback ref so that setCanvas triggers a rerender
@@ -29,7 +29,7 @@ export const Oscilloscope: FC<OscilloscopeProps> = ({ analyser }) => {
     if (canvas && context) {
       requestAnimationFrame(draw);
   
-      analyser.getByteTimeDomainData(dataArray);
+      analyser?.getByteTimeDomainData(dataArray);
   
       context.fillStyle = "rgb(30, 30, 30)";
       context.fillRect(0, 0, canvas.width, canvas.height);
