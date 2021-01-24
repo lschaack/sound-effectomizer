@@ -1,9 +1,9 @@
 import React, { FC, useState, useEffect, useRef, useCallback } from 'react';
 import cx from 'classnames';
 
-import { normalizeFromRange, normalizeToRange } from '../utils';
+import { normalizeFromRange, normalizeToRange } from '../../common/utils/audio';
 import max from 'lodash/max';
-import { easeInCubic } from 'utils/easingFunctions';
+import { easeInCubic } from 'common/utils/easingFunctions';
 
 import styles from './styles.scss';
 import styleConsts from '../consts.scss';

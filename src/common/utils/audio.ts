@@ -1,7 +1,8 @@
+import { AudioIO } from "common/AudioIO";
+import { WINDOW_SIZE } from "common/contants";
 import clamp from "lodash/clamp";
 import first from "lodash/first";
 import last from "lodash/last";
-import { WINDOW_SIZE } from "./constants";
 
 export const normalizeToRange = (min: number, max: number, input: number) =>
   clamp(input, 0, 1) * (max - min) + min;
@@ -20,36 +21,9 @@ export const getFrequencyFromTransposition = (transposition: number) => {
   return t / WINDOW_SIZE;
 };
 
-export type AudioIO<Options> = {
-  input: AudioNode;
-  output: AudioNode;
-  connect: (destination: AudioNode | AudioParam) => void;
-  disconnect: () => void;
-  setOptions: (options: Options) => AudioIO<Options>;
-};
-
-export const isIO = <Options>(node: AudioNode | AudioIO<Options>): node is AudioIO<Options> => {
-  const props: Array<keyof AudioIO<Options>> = [
-    'input', 'output', 'connect', 'disconnect', 'setOptions'
-  ];
-
-  return props.reduce<boolean>(
-    (hasSeenProps, prop) => hasSeenProps && Object.prototype.hasOwnProperty.call(node, prop),
-    true
-  );
-};
-
-export const makeAudioIO = <Options>(
-  input: AudioNode,
-  output: AudioNode,
-  setOptions: (arg0: Options) => AudioIO<Options>
-): AudioIO<Options> => ({
-  input,
-  output,
-  connect: (destination: AudioNode | AudioParam) => output.connect(destination as AudioNode),
-  disconnect: () => output.disconnect(),
-  setOptions,
-});
+export const isIO = <TNode extends AudioIO>(node: AudioNode | TNode): node is TNode => (
+  node instanceof AudioIO
+);
 
 export const mixToDryWet = (mix: number): [number, number] => [1 - mix, mix];
 
@@ -61,17 +35,14 @@ export const transpositionToFrequency = (context: AudioContext, transposition: n
   return frequency;
 };
 
-export const connect = <Options>(
-  from: AudioNode | AudioIO<Options>,
-  to: AudioNode | AudioIO<Options>
-) => (
+export const connect = (from: AudioNode | AudioIO, to: AudioNode | AudioIO) => (
   from.connect(isIO(to) ? to.input : to)
 );
 
 export const chainAudioNodes = (
-  ...nodes: Array<AudioNode | AudioIO<any> | null | undefined>
-): Maybe<AudioIO<any>> => {
-  const definedNodes = nodes.filter(Boolean) as Array<AudioNode | AudioIO<any>>;
+  ...nodes: Array<AudioNode | AudioIO | null | undefined>
+): Maybe<AudioIO> => {
+  const definedNodes = nodes.filter(Boolean) as Array<AudioNode | AudioIO>;
 
   const input = first(definedNodes);
   const output = last(definedNodes);
@@ -87,10 +58,9 @@ export const chainAudioNodes = (
     (curr, index, nodes) => index + 1 < nodes.length && connect(curr, nodes[index + 1])
   );
 
-  return makeAudioIO(
+  return new AudioIO(
     isIO(input) ? input.input : input,
     isIO(output) ? output.output : output,
-    () => { throw new Error("Can't set options on chained nodes"); },
   );
 };
 

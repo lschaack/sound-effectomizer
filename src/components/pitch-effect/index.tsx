@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { StateSetter } from 'context/types';
 
 import { EffectConfig } from '../effect-config';
-import { PitchOptions, createPitchNode, PitchNode } from './pitchNode';
+import { PitchNode, PitchOptions } from 'common/PitchNode';
 
 type TProps = {
   setPitch: StateSetter<Maybe<PitchNode>>;
@@ -13,9 +13,9 @@ const defaultOptions: PitchOptions = {
 };
 
 export const PitchEffect: FC<TProps> = ({ setPitch }) => (
-  <EffectConfig<PitchOptions>
+  <EffectConfig<PitchOptions, typeof PitchNode, PitchNode>
     effectName="pitch"
-    createEffectNode={createPitchNode}
+    AudioEffectConstructor={PitchNode}
     onChange={setPitch}
     defaultOptions={defaultOptions}
     rangeParams={[

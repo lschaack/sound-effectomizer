@@ -2,20 +2,20 @@ import React, { FC } from 'react';
 
 import { StateSetter } from 'context/types';
 import { EffectConfig } from '../effect-config';
-import { DelayOptions, createDelayNode, DelayNode } from './delayNode';
+import { TapeDelayOptions, TapeDelayNode } from 'common/TapeDelayNode';
 
 type TProps = {
-  setDelay: StateSetter<Maybe<DelayNode>>;
+  setDelay: StateSetter<Maybe<TapeDelayNode>>;
 }
 
-const defaultOptions: DelayOptions = {
+const defaultOptions: TapeDelayOptions = {
   time: 0.1,
   depth: 0.5,
 };
 
 export const DelayEffect: FC<TProps> = ({ setDelay }) => (
-  <EffectConfig<DelayOptions>
-    createEffectNode={createDelayNode}
+  <EffectConfig<TapeDelayOptions, typeof TapeDelayNode, TapeDelayNode>
+    AudioEffectConstructor={TapeDelayNode}
     effectName="delay"
     onChange={setDelay}
     defaultOptions={defaultOptions}

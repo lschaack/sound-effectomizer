@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { StateSetter } from 'context/types';
 
 import { EffectConfig } from '../effect-config';
-import { createVibratoNode, VibratoNode, VibratoOptions } from './vibratoNode';
+import { VibratoNode, VibratoOptions } from 'common/VibratoNode';
 
 type TProps = {
   setVibrato: StateSetter<Maybe<VibratoNode>>;
@@ -14,9 +14,9 @@ const defaultOptions: VibratoOptions = {
 };
 
 export const VibratoEffect: FC<TProps> = ({ setVibrato }) => (
-  <EffectConfig<VibratoOptions>
+  <EffectConfig<VibratoOptions, typeof VibratoNode, VibratoNode>
     effectName="vibrato"
-    createEffectNode={createVibratoNode}
+    AudioEffectConstructor={VibratoNode}
     onChange={setVibrato}
     defaultOptions={defaultOptions}
     rangeParams={[

@@ -9,15 +9,24 @@ import React, {
 import cx from 'classnames';
 import debounce from 'lodash/debounce';
 
-import { AudioIO } from '../utils';
-
 import styles from './styles.scss';
 import parentStyles from '../styles.scss';
 import groupBy from 'lodash/groupBy';
 import { useAudioContext } from 'context/AudioContext';
+import { FlangerNode } from 'common/FlangerNode';
+import { PitchNode } from 'common/PitchNode';
+import { TapeDelayNode } from 'common/TapeDelayNode';
+import { VibratoNode } from 'common/VibratoNode';
+import { AudioIO } from 'common/AudioIO';
 
-type TProps<Options> = {
-  createEffectNode: (context: AudioContext, options: Options) => AudioIO<Options>;
+// TODO: better place for this
+type AudioEffectConstructor = typeof FlangerNode
+  | typeof PitchNode
+  | typeof TapeDelayNode
+  | typeof VibratoNode;
+
+type TProps<Options, TConstructor extends AudioEffectConstructor, TResult extends AudioIO> = {
+  AudioEffectConstructor: TConstructor;
   effectName: string;
   defaultOptions: Options;
   rangeParams: Array<{
@@ -35,23 +44,23 @@ type TProps<Options> = {
     name: keyof Options;
     value: string;
   }>;
-  onChange: (effectNode: Maybe<AudioIO<Options>>) => void;
+  onChange: (effectNode: Maybe<TResult>) => void;
 }
 
-export const EffectConfig = <Options extends {}>({
-  createEffectNode,
+export const EffectConfig = <Options extends {}, TConstructor extends AudioEffectConstructor, TResult extends AudioIO>({
+  AudioEffectConstructor,
   onChange,
   defaultOptions,
   effectName,
   rangeParams,
   radioParams,
-}: TProps<Options>) => {
+}: TProps<Options, TConstructor, TResult>) => {
   const { context } = useAudioContext();
 
   const [ options, setOptions ] = useState(defaultOptions);
   const [ expanded, setExpanded ] = useState(false);
   const optionToggle = useRef<HTMLInputElement>(null);
-  const effectNode = useRef<Maybe<AudioIO<Options>>>();
+  const effectNode = useRef<TResult>();
 
   const toggleExpanded = () => setExpanded(!expanded);
 
@@ -61,13 +70,13 @@ export const EffectConfig = <Options extends {}>({
         effectNode.current = undefined;
         onChange(undefined);
       } else if (effectNode.current === undefined) { // create the node if undefined
-        effectNode.current = createEffectNode(context, options);
-        onChange(effectNode.current);
+        effectNode.current = new AudioEffectConstructor(context, options as any) as any; // TODO: as any
+        onChange(effectNode.current as any); // TODO: as any
       } else { // if the option is checked and the node is defined, modify in-place
-        effectNode.current?.setOptions(options);
+        effectNode.current?.setOptions(options as any); // TODO: as any
       }
     },
-    [options, context, createEffectNode, onChange]
+    [onChange, AudioEffectConstructor, context, options]
   );
 
   useEffect(handleOptionsChange, [options]);
@@ -143,7 +152,7 @@ export const EffectConfig = <Options extends {}>({
                 //  corresponding createSomethingNode functions
                 // non-standard "orient" attribute enables vertical sliders in Firefox
                 // "appearance: slider-vertical" in styles.scss should enable this in Chrome
-                // @ts-expect-error
+                //// @ts-expect-error
                 // orient="vertical"
                 min={0}
                 max={1}

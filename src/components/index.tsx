@@ -12,7 +12,7 @@ import cx from 'classnames';
 
 import { Soundbite } from './soundbite';
 import { FileSelector } from './file-selector';
-import { AudioIO, chainAudioNodes, urlToAudioBuffer } from './utils';
+import { chainAudioNodes, urlToAudioBuffer } from '../common/utils/audio';
 import { FlangerEffect } from './flanger-effect';
 import { DelayEffect } from './delay-effect';
 import { PitchEffect } from './pitch-effect';

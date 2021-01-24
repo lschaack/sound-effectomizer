@@ -60,6 +60,7 @@ module.exports = {
   resolve: {
     alias: {
       components: resolve(__dirname, 'src/components/'),
+      common: resolve(__dirname, 'src/common/'),
       context: resolve(__dirname, 'src/context/'),
       utils: resolve(__dirname, 'src/utils/'),
       assets: resolve(__dirname, 'assets/'),

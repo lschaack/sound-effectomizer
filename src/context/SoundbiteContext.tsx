@@ -1,4 +1,4 @@
-import { urlToAudioBuffer } from 'components/utils';
+import { urlToAudioBuffer } from 'common/utils/audio';
 import React, { createContext, FC, useContext, useState } from 'react';
 import { useAudioContext } from './AudioContext';
 

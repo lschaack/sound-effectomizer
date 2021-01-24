@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useRef } from 'react';
 
 import styles from './styles.scss';
-import { chainAudioNodes } from '../utils';
+import { chainAudioNodes } from '../../common/utils/audio';
 import { useAudioContext } from 'context/AudioContext';
 import { Soundbite as TSoundbite } from 'context/SoundbiteContext';
 import { useSoundEffectsContext } from 'context/SoundEffectsContext';

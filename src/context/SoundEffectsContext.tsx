@@ -7,19 +7,20 @@ import React, {
   useState
 } from 'react';
 
-import { FlangerNode } from 'components/flanger-effect/flangerNode';
-import { PitchNode } from 'components/pitch-effect/pitchNode';
-import { VibratoNode } from 'components/vibrato-effect/vibratoNode';
-import { DelayNode } from 'components/delay-effect/delayNode';
-import { AudioIO, chainAudioNodes } from 'components/utils';
+import { chainAudioNodes } from 'common/utils/audio';
 import { useAudioContext } from './AudioContext';
 import { StateSetter } from './types';
+import { FlangerNode } from 'common/FlangerNode';
+import { TapeDelayNode } from 'common/TapeDelayNode';
+import { PitchNode } from 'common/PitchNode';
+import { VibratoNode } from 'common/VibratoNode';
+import { AudioIO } from 'common/AudioIO';
 
 type TSoundEffectsContext = {
-  effectChain: Maybe<AudioIO<any>>;
+  effectChain: Maybe<AudioIO>;
   setConvolver: StateSetter<Maybe<ConvolverNode>>;
   setFlanger: StateSetter<Maybe<FlangerNode>>;
-  setDelay: StateSetter<Maybe<DelayNode>>;
+  setDelay: StateSetter<Maybe<TapeDelayNode>>;
   setPitch: StateSetter<Maybe<PitchNode>>;
   setVibrato: StateSetter<Maybe<VibratoNode>>;
   outputAnalyser: Maybe<AnalyserNode>;
@@ -44,11 +45,11 @@ export const SoundEffectsContextProvider: FC = ({ children }) => {
   const outputAnalyser = useMemo(() => context.createAnalyser(), [context]);
   const [ convolver, setConvolver ] = useState<ConvolverNode>();
   const [ flanger, setFlanger ] = useState<FlangerNode>();
-  const [ delay, setDelay ] = useState<DelayNode>();
+  const [ delay, setDelay ] = useState<TapeDelayNode>();
   const [ pitch, setPitch ] = useState<PitchNode>();
   const [ vibrato, setVibrato ] = useState<VibratoNode>();
   // TODO: effectChain doesn't seem to update on initial render, making this necessary
-  const [ effectChain, setEffectChain ] = useState<Maybe<AudioIO<any>>>(
+  const [ effectChain, setEffectChain ] = useState<Maybe<AudioIO>>(
     chainAudioNodes(convolver, pitch, vibrato, delay, flanger, outputAnalyser)
   );
 
