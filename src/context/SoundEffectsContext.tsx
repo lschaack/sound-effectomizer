@@ -55,7 +55,7 @@ export const SoundEffectsContextProvider: FC = ({ children }) => {
 
   useEffect(
     () => setEffectChain(
-      chainAudioNodes(pitch, convolver, flanger, vibrato, delay, outputAnalyser)
+      chainAudioNodes(convolver, pitch, vibrato, delay, flanger, outputAnalyser)
     ),
     [convolver, flanger, delay, pitch, vibrato, outputAnalyser]
   );
