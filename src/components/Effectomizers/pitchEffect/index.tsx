@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { StateSetter } from 'context/types';
 
-import { EffectConfig } from '../effect-config';
+import { EffectConfig } from '../effectConfig';
 import { PitchNode, PitchOptions } from 'common/PitchNode';
 
 type TProps = {

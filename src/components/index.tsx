@@ -7,10 +7,10 @@ import React, {
 } from 'react';
 
 import { Soundbite } from './soundbite';
-import { FileSelector } from './file-selector';
+import { FileSelector } from './fileSelector';
 import { chainAudioNodes } from '../common/utils/audio';
 import { Oscilloscope } from './oscilloscope';
-import { MicrophoneInput } from './microphone-input';
+import { MicrophoneInput } from './microphoneInput';
 // import { SoundbiteEditor } from './soundbite-editor';
 
 import styles from './styles.scss';
