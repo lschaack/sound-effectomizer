@@ -3,15 +3,25 @@ import cx from 'classnames';
 
 import { urlToAudioBuffer } from '../../../common/utils/audio';
 
-import gatedPlace from 'assets/GATED-PLACE-E001-M2S.wav';
-import megaDiffusor from 'assets/MEGA-DIFFUSOR-E001-M2S.wav';
-import miniCaves from 'assets/MINI-CAVES-E001-M2S.wav';
+import chateauDeLogneOutside from 'assets/IMreverbs/Chateau de Logne, Outside.wav';
+import higlyDampedLargeRoom from 'assets/IMreverbs/Highly Damped Large Room.wav';
+import stNicolaesChurch from 'assets/IMreverbs/St Nicolaes Church.wav';
+import scalaMilanOperaHall from 'assets/IMreverbs/Scala Milan Opera Hall.wav';
+import smallDrumRoom from 'assets/IMreverbs/Small Drum Room.wav';
+import rubyRoom from 'assets/IMreverbs/Ruby Room.wav';
 import { useAudioContext } from 'context/AudioContext';
 import { StateSetter } from 'context/types';
 
 import parentParentStyles from '../../styles.scss'; // TODO: ...
 
-const CONVOLVERS = { gatedPlace, megaDiffusor, miniCaves };
+const CONVOLVERS = {
+  chateauDeLogneOutside,
+  higlyDampedLargeRoom,
+  stNicolaesChurch,
+  scalaMilanOperaHall,
+  smallDrumRoom,
+  rubyRoom,
+};
 
 const fetchConvolver = async (context: AudioContext, url: string) => {
   const audioBuffer = await urlToAudioBuffer(context, url);
@@ -24,28 +34,31 @@ const fetchConvolver = async (context: AudioContext, url: string) => {
 
 const getConvolverKey = (index: number) => `convolver-${index}`;
 
+type ConvolverNodeMap = Record<string, ConvolverNode>;
+
 type ReverbEffectProps = {
   setConvolver: StateSetter<Maybe<ConvolverNode>>;
 }
 
 export const ReverbEffect: FC<ReverbEffectProps> = ({ setConvolver }) => {
   const { context } = useAudioContext();
-  const [ convolvers, setConvolvers ] = useState<ConvolverNode[]>([]);
+  const [ convolvers, setConvolvers ] = useState<ConvolverNodeMap>({});
 
   const convolverInput = useRef<HTMLInputElement>(null);
   const convolverSelect = useRef<HTMLSelectElement>(null);
-  const getCurrentConvolver = () => setConvolver(
+  const setCurrentConvolver = () => setConvolver(
     convolverInput.current?.checked
-      ? convolvers[Number(convolverSelect.current?.value)]
+      ? convolvers[convolverSelect.current?.value ?? '']
       : undefined
   );
 
   // Load default reverbs
-  useEffect(() => Object.values(CONVOLVERS).forEach(filename =>
+  useEffect(() => Object.entries(CONVOLVERS).forEach(([name, filename]) =>
     fetchConvolver(context, filename).then(convolver =>
-      setConvolvers(prevConvolvers =>
-        prevConvolvers.concat([convolver])
-      )
+      setConvolvers(prevConvolvers => ({
+        ...prevConvolvers,
+        [name]: convolver
+      }))
     )
   ), [context]);
 
@@ -56,14 +69,14 @@ export const ReverbEffect: FC<ReverbEffectProps> = ({ setConvolver }) => {
         id="reverbToggle"
         className={cx('material-icons', 'effectToggle')}
         type="checkbox"
-        onChange={getCurrentConvolver}
+        onChange={setCurrentConvolver}
       />
       <h2><label htmlFor="reverbToggle">reverb</label></h2>
-      <select ref={convolverSelect} onChange={getCurrentConvolver}>
-        {convolvers.map((_, index) => {
+      <select ref={convolverSelect} onChange={setCurrentConvolver}>
+        {Object.entries(convolvers).map(([ filename, convolver ], index) => {
           const key = getConvolverKey(index);
 
-          return <option id={key} key={key} value={index}>{key}</option>;
+          return <option id={key} key={key} value={filename}>{filename}</option>;
         })}
       </select>
     </div>

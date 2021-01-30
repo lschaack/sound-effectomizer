@@ -68,3 +68,4 @@ assets/
 assets-old/
 src/components/plants/old-things-i-probably-dont-need.tsx
 scraps/
+.DS_Store

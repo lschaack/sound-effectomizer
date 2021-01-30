@@ -48,15 +48,30 @@ export const SoundEffectsContextProvider: FC = ({ children }) => {
   const [ delay, setDelay ] = useState<TapeDelayNode>();
   const [ pitch, setPitch ] = useState<PitchNode>();
   const [ vibrato, setVibrato ] = useState<VibratoNode>();
-  // TODO: effectChain doesn't seem to update on initial render, making this necessary
-  const [ effectChain, setEffectChain ] = useState<Maybe<AudioIO>>(
-    chainAudioNodes(convolver, pitch, vibrato, delay, flanger, outputAnalyser)
+
+  /**
+   * FIXME: Steps to reproduce issue:
+   * 1. enable reverb, check enabled w/soundbite
+   * 2. enable flanger, check both enabled w/soundbite
+   * 3. disable reverb, check flanger enabled w/soundbite
+   * 4. re-enable reverb -> flanger still enabled, reverb apparently not
+   * 5. disable flanger -> reverb now enabled
+   */
+  const getEffectChain = () => chainAudioNodes(
+    pitch,
+    vibrato,
+    delay,
+    flanger,
+    convolver,
+    outputAnalyser
   );
 
+  // TODO: effectChain doesn't seem to update on initial render, making this necessary
+  const [ effectChain, setEffectChain ] = useState<Maybe<AudioIO>>(getEffectChain());
+
   useEffect(
-    () => setEffectChain(
-      chainAudioNodes(convolver, pitch, vibrato, delay, flanger, outputAnalyser)
-    ),
+    () => setEffectChain(getEffectChain()),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [convolver, flanger, delay, pitch, vibrato, outputAnalyser]
   );
 
