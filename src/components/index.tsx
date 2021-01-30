@@ -1,25 +1,17 @@
 import React, {
   FC,
   useState,
-  useRef,
   useEffect,
   useCallback,
-  useMemo,
   KeyboardEventHandler
 } from 'react';
 
-import cx from 'classnames';
-
 import { Soundbite } from './soundbite';
 import { FileSelector } from './file-selector';
-import { chainAudioNodes, urlToAudioBuffer } from '../common/utils/audio';
-import { FlangerEffect } from './flanger-effect';
-import { DelayEffect } from './delay-effect';
-import { PitchEffect } from './pitch-effect';
+import { chainAudioNodes } from '../common/utils/audio';
 import { Oscilloscope } from './oscilloscope';
-import { VibratoEffect } from './vibrato-effect';
 import { MicrophoneInput } from './microphone-input';
-import { SoundbiteEditor } from './soundbite-editor';
+// import { SoundbiteEditor } from './soundbite-editor';
 
 import styles from './styles.scss';
 
@@ -41,32 +33,16 @@ import roo from 'assets/roo.mp3';
 // import sleepyBork from 'assets/sleepy_bork.mp3';
 // import wohh from 'assets/wohh.mp3';
 
-import gatedPlace from 'assets/GATED-PLACE-E001-M2S.wav';
-import megaDiffusor from 'assets/MEGA-DIFFUSOR-E001-M2S.wav';
-import miniCaves from 'assets/MINI-CAVES-E001-M2S.wav';
 import { Context } from 'context';
-import { Soundbite as TSoundbite, useSoundbiteContext } from 'context/SoundbiteContext';
+import { useSoundbiteContext } from 'context/SoundbiteContext';
 import { useSoundEffectsContext } from 'context/SoundEffectsContext';
+import { Effectomizers } from './Effectomizers';
+import { useAudioContext } from 'context/AudioContext';
 
 const MP3_SRCS = {
   elegiac, bulbous, yikes, oof, aorrrrer, arooroorooroo, cronch, crybaby, mrrhrr, roo,
   // euuhuh, rruuuh, grrr, heaghh, wohh, sleepyBork,
 };
-
-const CONVOLVERS = { gatedPlace, megaDiffusor, miniCaves };
-
-const context = new window.AudioContext();
-
-const fetchConvolver = async (context: AudioContext, url: string) => {
-  const audioBuffer = await urlToAudioBuffer(context, url);
-  const convolver = context.createConvolver();
-  convolver.normalize = true; // TODO: make setting?
-  convolver.buffer = audioBuffer;
-
-  return convolver;
-};
-
-const getConvolverKey = (index: number) => `convolver-${index}`;
 
 const playOnKeydown: KeyboardEventHandler = event => {
   const numKey = event.keyCode - 48;
@@ -88,80 +64,31 @@ export const App: FC = () => (
 
 // TODO: make this only handle input, separate effectChain
 const SoundEffectomizer: FC = () => {
+  const { context } = useAudioContext();
   const { soundbites, addSoundbite, addSoundbitesFromUrlMap } = useSoundbiteContext();
   // const [ soundbites, setSoundbites ] = useState<SoundbiteProps[]>([]);
-  const [ convolvers, setConvolvers ] = useState<ConvolverNode[]>([]);
 
-  const {
-    setConvolver,
-    setFlanger,
-    setDelay,
-    setPitch,
-    setVibrato,
-    effectChain,
-    outputAnalyser
-  } = useSoundEffectsContext();
+  const { effectChain, outputAnalyser } = useSoundEffectsContext();
 
   const [ currentBufferIndex, setCurrentBufferIndex ] = useState(0);
-
-  const convolverInput = useRef<HTMLInputElement>(null);
-  const convolverSelect = useRef<HTMLSelectElement>(null);
-  const getCurrentConvolver = () => setConvolver(
-    convolverInput.current?.checked
-      ? convolvers[Number(convolverSelect.current?.value)]
-      : undefined
-  );
 
   // Load default soundbites
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => addSoundbitesFromUrlMap(MP3_SRCS), []);
-
-  // Load default reverbs
-  useEffect(() => Object.values(CONVOLVERS).forEach(filename =>
-    fetchConvolver(context, filename).then(convolver =>
-      setConvolvers(prevConvolvers =>
-        prevConvolvers.concat([convolver])
-      )
-    )
-  ), []);
 
   const connectMicSourceToOutput = useCallback((source: Maybe<MediaStreamAudioSourceNode>) => {
     if (source) {
       context.resume();
       chainAudioNodes(source, effectChain, context.destination);
     }
-  }, [effectChain]);
+  }, [context, effectChain]);
 
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <div className={styles.configRows}>
-          <div className={cx('centeredRow', styles.configRow)}>
-            <input
-              ref={convolverInput}
-              id="reverbToggle"
-              className={cx('material-icons', 'effectToggle')}
-              type="checkbox"
-              onChange={getCurrentConvolver}
-            />
-            <h2><label htmlFor="reverbToggle">reverb</label></h2>
-            <select ref={convolverSelect} onChange={getCurrentConvolver}>
-              {convolvers.map((_, index) => {
-                const key = getConvolverKey(index);
-
-                return <option id={key} key={key} value={index}>{key}</option>;
-              })}
-            </select>
-          </div>
-          <FlangerEffect setFlanger={setFlanger} />
-          <VibratoEffect setVibrato={setVibrato} />
-          <DelayEffect setDelay={setDelay} />
-          <PitchEffect setPitch={setPitch} />
-        </div>
+        <Effectomizers />
         <div
           className={styles.soundboard}
-          // style={{ gridTemplateColumns: `repeat(${Math.ceil(Math.sqrt(soundbites.length))}, minMax(7em, 1fr))` }}
-          // style={{ gridTemplateColumns: `repeat(auto-fit, minmax(7em, 1fr))` }}
           // onKeyDown={playOnKeydown} // TODO: potentially re-enable
           tabIndex={-1}
         >

@@ -31,7 +31,8 @@ export class PitchNode extends AudioIO {
     const { transposition, autoStart } = options;
     this.oscillator = new CustomOscillatorNode(context, {
       type: 'sawtooth',
-      frequency: getFrequencyFromTransposition(transposition)
+      frequency: getFrequencyFromTransposition(transposition),
+      autoStart: false
     });
 
     this.phaseAdjust = context.createDelay();
@@ -47,6 +48,7 @@ export class PitchNode extends AudioIO {
     this.crossfade = new CrossfadeNode(context, {
       leftInput: leftDelay,
       rightInput: rightDelay,
+      autoStart: false,
     });
 
     /********** Connect **********/

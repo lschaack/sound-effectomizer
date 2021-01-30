@@ -36,16 +36,17 @@ export const SoundbiteContextProvider: FC = ({ children }) => {
     );
   };
 
-  const addSoundbitesFromUrlMap: TSoundbiteContext['addSoundbitesFromUrlMap'] = async nameToUrl =>
+  const addSoundbitesFromUrlMap: TSoundbiteContext['addSoundbitesFromUrlMap'] = nameToUrl =>
     // Map { [name]: url } to [{ name, buffer }]
-    void updateSoundbites(soundbites.concat(
-      await Promise.all(Object.entries(nameToUrl).map<Promise<Soundbite>>(
-        async ([ name, filename ]) => ({
+    void Promise.all(Object.entries(nameToUrl).map<Promise<Soundbite>>(([ name, filename ]) =>
+      urlToAudioBuffer(context, filename).then(buffer =>
+        ({
           name,
-          buffer: await urlToAudioBuffer(context, filename)
+          buffer
         })
-      )))
-    );
+      ))).then(
+        newSoundbites => updateSoundbites(soundbites.concat(newSoundbites))
+      );
 
   return (
     <SoundbiteContext.Provider
