@@ -3,7 +3,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap');
 
 @import './theme';
-@import './consts';
 
 body {
   font-family: 'Poppins', 'Roboto Mono', 'Fira Mono', 'Arial', monospace;
@@ -42,8 +41,8 @@ body {
 
   &:checked::before {
     content: 'power_settings_new';
-    color: adjust-color($color: $hazy-blue, $lightness: -20%);
-    filter: drop-shadow(0 0 3px adjust-color($color: $hazy-blue, $lightness: -20%));
+    color: var(--quaternary);
+    filter: drop-shadow(0 0 3px var(--quaternary));
   }
 }
 
@@ -78,7 +77,7 @@ h2 {
   margin: 0 1rem;
   height: 100vh;
   max-height: 100vh;
-  max-width: $app-max-width;
+  max-width: var(--app-max-width);
   width: 100%;
   display: flex;
 
@@ -97,14 +96,14 @@ h2 {
 
   grid-template-rows: repeat(
     auto-fill,
-    $soundbite-diameter
+    var(--soundbite-diameter)
   );
 
   grid-template-columns: repeat(
     auto-fill,
     minmax(
       0,
-      $soundbite-diameter
+      var(--soundbite-diameter)
     )
   );
 

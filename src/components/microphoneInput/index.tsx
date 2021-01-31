@@ -6,13 +6,12 @@ import max from 'lodash/max';
 import { easeInCubic } from 'common/utils/easingFunctions';
 
 import styles from './styles.scss';
-import styleConsts from '../consts.scss';
 
 const DECAY_RATE = 0.005; // in normalized volume units per millisecond
 const DECAY_TIME = 1 / DECAY_RATE; // in ms
 const volumeToDiameter = (volume: number) => `${normalizeToRange(
-  parseInt(styleConsts.micIconDiameter, 10),
-  parseInt(styleConsts.soundbiteSize, 10),
+  parseInt(document.documentElement.style.getPropertyValue('--micIconDiameter'), 10),
+  parseInt(document.documentElement.style.getPropertyValue('--soundbiteSize'), 10),
   volume
 )}rem`;
 

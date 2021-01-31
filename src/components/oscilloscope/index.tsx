@@ -1,7 +1,6 @@
 import React, { FC, useRef, useState, useEffect, useCallback, useMemo } from 'react';
 
 import styles from './styles.scss';
-import styleConsts from '../consts.scss';
 
 type OscilloscopeProps = {
   analyser?: AnalyserNode;
@@ -35,7 +34,7 @@ export const Oscilloscope: FC<OscilloscopeProps> = ({ analyser }) => {
       context.fillRect(0, 0, canvas.width, canvas.height);
   
       context.lineWidth = 2;
-      context.strokeStyle = styleConsts.hazyCyan;
+      context.strokeStyle = document.documentElement.style.getPropertyValue('--hazyCyan');
   
       context.beginPath();
   

@@ -1,8 +1,6 @@
-@import '../consts.scss';
-
 canvas.oscilloscope {
   z-index: 1;
-  height: $soundbite-diameter;
+  height: var(--soundbite-diameter);
   width: 100%;
-  border-radius: $soundbite-radius;
+  border-radius: var(--soundbite-radius);
 }

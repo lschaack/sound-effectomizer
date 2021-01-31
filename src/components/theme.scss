@@ -1,10 +1,10 @@
 :root {
-  // ionic-style: https://ionicframework.com/docs/theming/basics
-  --primary: #00e1af;
-  --secondary: green;
-  --tertiary: blue;
-  --warning: yellow;
-  --danger: darkred;
+  // ionic style (sort of): https://ionicframework.com/docs/theming/basics
+  --primary: #f2ee9e;
+  --secondary: #f29ea2;
+  --tertiary: #9ea2f2;
+  --quaternary: #9ef2ee;
+
   --dark: #353739;
   --medium: #eee;
   --light: white;
@@ -13,4 +13,10 @@
   // --text: white;
   --background: white;
   --text: black;
+
+  --app-max-width: 1400px;
+  --soundbite-diameter: 7rem;
+  --soundbite-radius: 5rem;
+  --soundbite-margin: 0.5em;
+  --mic-icon-diameter: 3rem;
 }

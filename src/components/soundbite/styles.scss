@@ -1,15 +1,14 @@
-@import '../consts';
 
 .soundbite {
   font-family: inherit;
 
-  width: $soundbite-diameter;
-  height: $soundbite-diameter;
+  width: var(--soundbite-diameter);
+  height: var(--soundbite-diameter);
 
-  margin: $soundbite-margin;
-  border-radius: $soundbite-radius;
+  margin: var(--soundbite-margin);
+  border-radius: var(--soundbite-radius);
   // background-color: rgb(120, 199, 237);
-  background-color: $hazy-brass;
+  background-color: var(--primary);
 }
 
 .soundbite:focus {
