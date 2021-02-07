@@ -9,9 +9,11 @@ import styles from './styles.scss';
 
 const DECAY_RATE = 0.005; // in normalized volume units per millisecond
 const DECAY_TIME = 1 / DECAY_RATE; // in ms
+
+// FIXME: this is broken w/css vars
 const volumeToDiameter = (volume: number) => `${normalizeToRange(
-  parseInt(document.documentElement.style.getPropertyValue('--micIconDiameter'), 10),
-  parseInt(document.documentElement.style.getPropertyValue('--soundbiteSize'), 10),
+  parseInt(getComputedStyle(document.documentElement).getPropertyValue('--mic-icon-diameter')),
+  parseInt(getComputedStyle(document.documentElement).getPropertyValue('--soundbite-size')),
   volume
 )}rem`;
 

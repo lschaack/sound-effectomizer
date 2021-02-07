@@ -34,7 +34,7 @@ export const Oscilloscope: FC<OscilloscopeProps> = ({ analyser }) => {
       context.fillRect(0, 0, canvas.width, canvas.height);
   
       context.lineWidth = 2;
-      context.strokeStyle = document.documentElement.style.getPropertyValue('--hazyCyan');
+      context.strokeStyle = '#9ef2ee';
   
       context.beginPath();
   

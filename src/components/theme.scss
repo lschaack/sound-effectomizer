@@ -1,9 +1,12 @@
+// TODO: make this into context and get/set using
+//  document.documentElement.setProperty()
+//  document.documentElement.getProperty()
+
 :root {
   // ionic style (sort of): https://ionicframework.com/docs/theming/basics
   --primary: #f2ee9e;
   --secondary: #f29ea2;
   --tertiary: #9ea2f2;
-  --quaternary: #9ef2ee;
 
   --dark: #353739;
   --medium: #eee;
