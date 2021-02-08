@@ -40,8 +40,8 @@ body {
 
   &:checked::before {
     content: 'power_settings_new';
-    color: var(--quaternary);
-    filter: drop-shadow(0 0 3px var(--quaternary));
+    color: var(--tertiary);
+    filter: drop-shadow(0 0 3px var(--tertiary));
   }
 }
 
