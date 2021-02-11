@@ -38,6 +38,7 @@ import { useSoundbiteContext } from 'context/SoundbiteContext';
 import { useSoundEffectsContext } from 'context/SoundEffectsContext';
 import { Effectomizers } from './Effectomizers';
 import { useAudioContext } from 'context/AudioContext';
+import { ThemePicker } from './ThemePicker';
 
 const MP3_SRCS = {
   elegiac, bulbous, yikes, oof, aorrrrer, arooroorooroo, cronch, crybaby, mrrhrr, roo,
@@ -86,6 +87,7 @@ const SoundEffectomizer: FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
+        <ThemePicker />
         <Effectomizers />
         <div
           className={styles.soundboard}
