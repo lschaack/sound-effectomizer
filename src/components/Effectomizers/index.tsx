@@ -7,8 +7,6 @@ import { VibratoEffect } from './vibratoEffect';
 import { FlangerEffect } from './flangerEffect';
 import { ReverbEffect } from './reverbEffect';
 
-import parentStyles from '../styles.scss';
-
 export const Effectomizers: FC = () => {
   const {
     setConvolver,
@@ -19,7 +17,7 @@ export const Effectomizers: FC = () => {
   } = useSoundEffectsContext();
 
   return (
-    <div className={parentStyles.configRows}>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
       <ReverbEffect setConvolver={setConvolver}/>
       <FlangerEffect setFlanger={setFlanger} />
       <VibratoEffect setVibrato={setVibrato} />

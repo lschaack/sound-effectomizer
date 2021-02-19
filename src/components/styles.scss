@@ -3,6 +3,15 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap');
 
+body, html {
+  height: 100%;
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Poppins', 'Roboto Mono', 'Fira Mono', 'Arial', monospace;
 
@@ -10,17 +19,8 @@ body {
   padding: 0;
 
   overflow: hidden;
-}
 
-:global(.centeredRow) {
-  display: flex;
-  justify-content: center;
-}
-
-:global(.centeredCol) {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  background-color: var(--dark);
 }
 
 :global(.effectToggle) {
@@ -30,30 +30,22 @@ body {
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
+  cursor: pointer;
+
+  + label {
+    color: var(--primary);
+    cursor: pointer;
+  }
 
   &::before {
     content: 'power_settings_new';
-    position: relative;
-    top: 20%;
-    font-weight: 500;
+    color: var(--medium);
   }
 
   &:checked::before {
-    content: 'power_settings_new';
     color: var(--tertiary);
-    filter: drop-shadow(0 0 3px var(--tertiary));
+    filter: drop-shadow(0 0 3px var(--tertiary)) brightness(200%);
   }
-}
-
-:global(.effectToggle),
-:global(.effectToggle) + label {
-  cursor: pointer;
-}
-
-:global(.labelledIcon) {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 h2 {
@@ -63,17 +55,17 @@ h2 {
 }
 
 .container {
-  color: var(--text);
+  color: var(--primary);
 
   height: 100%;
   width: 100%;
 
   display: flex;
   justify-content: center;
+  margin: 1rem;
 }
 
 .content {
-  margin: 0 1rem;
   height: 100vh;
   max-height: 100vh;
   max-width: var(--app-max-width);
@@ -82,11 +74,6 @@ h2 {
 
   > div {
     flex: 1 1;
-    overflow-y: scroll;
-  }
-
-  > div:not(:first-child) {
-    margin-left: 1rem;
   }
 }
 
@@ -110,44 +97,13 @@ h2 {
   align-items: center;
   margin-top: 1rem;
   grid-gap: 1rem;
-  width: 100%;
+
+  &:focus {
+    outline: 0;
+  }
 
   // > div:last-child, // TODO: re-enable when soundbite editor is back
   > canvas:first-child {
     grid-column: 1 / -1;
   }
-}
-
-.soundboard:focus {
-  outline: 0;
-}
-
-.configRows {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-
-  > .expandableRow {
-    flex-shrink: 10;
-  }
-
-  > .expanded {
-    flex-grow: 1;
-  }
-}
-
-.configRows > hr {
-  width: 95%;
-  height: 0;
-  border: 0;
-  outline: 1px solid #ccc;
-}
-
-.configRow {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  max-width: 20rem;
-  column-gap: 1rem;
-  margin-top: 1rem;
 }

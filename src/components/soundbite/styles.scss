@@ -1,19 +1,8 @@
-
 .soundbite {
   font-family: inherit;
 
-  width: var(--soundbite-diameter);
-  height: var(--soundbite-diameter);
-
-  margin: var(--soundbite-margin);
-  border-radius: var(--soundbite-radius);
-  // background-color: rgb(120, 199, 237);
+  color: var(--dark);
   background-color: var(--primary);
-}
-
-.soundbite:focus {
-  outline: 0;
-  box-shadow: 0 0 0 2px blue;
 }
 
 .soundbite > span {

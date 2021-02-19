@@ -1,14 +1,6 @@
-
-.hidden {
-  visibility: hidden;
-  position: absolute;
-}
-
 .fileSelector {
-  height: var(--soundbite-diameter);
-  width: var(--soundbite-diameter);
-  border-radius: var(--soundbite-radius);
   background-color: var(--secondary);
+  color: var(--dark);
   font-size: 2em;
 
   text-align: center;

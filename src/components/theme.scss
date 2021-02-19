@@ -1,23 +1,72 @@
 // TODO: make this into context and get/set using
 //  document.documentElement.setProperty()
 //  document.documentElement.getProperty()
-
-:root {
-  // ionic style (sort of): https://ionicframework.com/docs/theming/basics
-  --primary: #f2ee9e;
-  --secondary: #f29ea2;
-  --tertiary: #9ea2f2;
-
-  --dark: #353739;
-  --medium: #eee;
-  --light: white;
-
-  --background: white;
-  --text: black;
-
-  --app-max-width: 1400px;
-  --soundbite-diameter: 7rem;
-  --soundbite-radius: 5rem;
-  --soundbite-margin: 0.5em;
-  --mic-icon-diameter: 3rem;
+:global(.hidden) {
+  visibility: hidden;
+  position: absolute;
 }
+
+:global(.gridButton) {
+  height: var(--soundbite-diameter);
+  width: var(--soundbite-diameter);
+
+  border-radius: var(--soundbite-radius);
+
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 2px var(--tertiary);
+  }
+}
+
+:global(button) {
+  border: none;
+  cursor: pointer;
+}
+
+// :root {
+//   // --primary: #f2ee9e;
+//   // --secondary: #f29ea2;
+//   // --tertiary: #9ea2f2;
+
+//   // --dark: #151719;
+//   // --medium: #eee;
+//   // --light: white;
+
+//   // --primary: #7BE3D0;
+//   // --secondary: #FFDFCC;
+//   // --tertiary: #D6E0F4;
+
+//   // --dark: #213D46;
+//   // --medium: #ccc;
+//   // --light: white;
+
+//   --primary: #FEE62F;
+//   --secondary: #91E408;
+//   --tertiary: #9CF0C7;
+
+//   --dark: #213F48;
+//   --medium: #ccc;
+//   --light: white;
+
+//   // --primary: #DFE7E5;
+//   // --secondary: #908ACA;
+//   // --tertiary: #FAC956;
+
+//   // --dark: #3B2D31;
+//   // --medium: #ccc;
+//   // --light: white;
+
+//   // --primary: #F7F5C6;
+//   // --secondary: #FDDECE;
+//   // --tertiary: #FDDECE;
+
+//   // --dark: #354C54;
+//   // --medium: #ccc;
+//   // --light: white;
+
+//   --app-max-width: 1400px;
+//   --soundbite-diameter: 7rem;
+//   --soundbite-radius: 5rem;
+//   --soundbite-margin: 0.5em;
+//   --mic-icon-diameter: 3rem;
+// }

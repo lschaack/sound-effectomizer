@@ -40,13 +40,18 @@ export const FileSelector: FC<TProps> = ({ onSelect, context }) => {
   );
   
   // https://stackoverflow.com/a/5813384/6011226 for custom file input
+  // TODO: make useable w/keyboard
   return (
     <div>
-      <label className={cx('material-icons', styles.fileSelector)} htmlFor={FILE_SELECTOR_ID}>
+      <label
+        tabIndex={0}
+        className={cx('material-icons', 'gridButton', styles.fileSelector)}
+        htmlFor={FILE_SELECTOR_ID}
+      >
         add
       </label>
       <input
-        className={styles.hidden}
+        className="hidden"
         id={FILE_SELECTOR_ID}
         type="file"
         onChange={handleFileChange}

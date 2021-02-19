@@ -1,4 +1,3 @@
-
 .outer,
 .middle,
 .inner {
@@ -10,8 +9,6 @@
 
 .outer {
   user-select: none;
-  width: var(--soundbite-diameter);
-  height: var(--soundbite-diameter);
   background-color: var(--medium);
 }
 

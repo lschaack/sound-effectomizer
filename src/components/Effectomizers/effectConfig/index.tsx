@@ -10,7 +10,6 @@ import cx from 'classnames';
 import debounce from 'lodash/debounce';
 
 import styles from './styles.scss';
-import parentStyles from '../../styles.scss';
 import groupBy from 'lodash/groupBy';
 import { useAudioContext } from 'context/AudioContext';
 import { FlangerNode } from 'common/FlangerNode';
@@ -121,7 +120,7 @@ export const EffectConfig = <Options extends {}, TConstructor extends AudioEffec
   );
 
   return (
-    <div className={cx(styles.effectContainer, parentStyles.expandableRow, expanded && parentStyles.expanded)}>
+    <div>
       <div className={cx(styles.configRow)}>
         <input
           id={`${effectName}-toggle`}
@@ -130,7 +129,7 @@ export const EffectConfig = <Options extends {}, TConstructor extends AudioEffec
           type="checkbox"
           onChange={handleOptionsChange}
         />
-        <h2><label htmlFor={`${effectName}-toggle`}>{effectName}</label></h2>
+        <label htmlFor={`${effectName}-toggle`}><h2>{effectName}</h2></label>
         {/* TODO: bubble event up from button rather than just adding to both */}
         {/* <div className={styles.expandToggle} onClick={toggleExpanded}>
           <button className="material-icons" onClick={toggleExpanded}>

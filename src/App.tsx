@@ -3,7 +3,8 @@ import ReactDom from 'react-dom';
 
 import { App } from 'components';
 
-// TODO: put this literally anywhere else
+import 'components/theme.scss';
+
 Object.defineProperty(
   Function.prototype,
   'partial',

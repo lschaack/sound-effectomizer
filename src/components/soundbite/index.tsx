@@ -1,10 +1,12 @@
 import React, { FC, useEffect, useRef } from 'react';
+import cx from 'classnames';
 
-import styles from './styles.scss';
 import { chainAudioNodes } from '../../common/utils/audio';
 import { useAudioContext } from 'context/AudioContext';
 import { Soundbite as TSoundbite } from 'context/SoundbiteContext';
 import { useSoundEffectsContext } from 'context/SoundEffectsContext';
+
+import styles from './styles.scss';
 
 export type SoundbiteProps = {
   soundbite: TSoundbite;
@@ -46,7 +48,11 @@ export const Soundbite: FC<SoundbiteProps> = ({
   }, [effectChain]); // eslint-disable-line
 
   return (
-    <button className={styles.soundbite} onClick={handleClick} onContextMenu={handleRightClick}>
+    <button
+      className={cx('gridButton', styles.soundbite)}
+      onClick={handleClick}
+      onContextMenu={handleRightClick}
+    >
       <span>{name}</span>
     </button>
   );

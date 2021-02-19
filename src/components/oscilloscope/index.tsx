@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { FC, useRef, useState, useEffect, useCallback, useMemo, useLayoutEffect } from 'react';
 
 import styles from './styles.scss';
 
@@ -10,6 +10,7 @@ type OscilloscopeProps = {
 export const Oscilloscope: FC<OscilloscopeProps> = ({ analyser }) => {
   const [ canvas, setCanvas ] = useState<HTMLCanvasElement>();
   const [ context, setContext ] = useState<CanvasRenderingContext2D | null | undefined>();
+  const [ lineColor, setLineColor ] = useState('#9ef2ee');
   const prevCurveData = useRef<Uint8Array>(new Uint8Array());
   const bufferLength = useMemo(() => analyser?.frequencyBinCount ?? 0, [analyser]);
   const dataArray = useMemo(() => new Uint8Array(bufferLength), [bufferLength]);
@@ -23,6 +24,10 @@ export const Oscilloscope: FC<OscilloscopeProps> = ({ analyser }) => {
     []
   );
 
+  useLayoutEffect(() => setLineColor(
+      getComputedStyle(document.documentElement).getPropertyValue('--tertiary')
+  ), []);
+
   // draw an oscilloscope of the current audio source
   const draw = useCallback(() => {
     if (canvas && context) {
@@ -30,11 +35,12 @@ export const Oscilloscope: FC<OscilloscopeProps> = ({ analyser }) => {
   
       analyser?.getByteTimeDomainData(dataArray);
   
-      context.fillStyle = "rgb(30, 30, 30)";
+      context.fillStyle = "#000";
       context.fillRect(0, 0, canvas.width, canvas.height);
   
       context.lineWidth = 2;
-      context.strokeStyle = '#9ef2ee';
+      // context.strokeStyle = ;
+      context.strokeStyle = lineColor;
   
       context.beginPath();
   

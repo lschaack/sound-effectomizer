@@ -12,8 +12,6 @@ import rubyRoom from 'assets/IMreverbs/Ruby Room.wav';
 import { useAudioContext } from 'context/AudioContext';
 import { StateSetter } from 'context/types';
 
-import parentParentStyles from '../../styles.scss'; // TODO: ...
-
 const CONVOLVERS = {
   chateauDeLogneOutside,
   higlyDampedLargeRoom,
@@ -63,7 +61,7 @@ export const ReverbEffect: FC<ReverbEffectProps> = ({ setConvolver }) => {
   ), [context]);
 
   return (
-    <div className={cx('centeredRow', parentParentStyles.configRow)}>
+    <div style={{ display: 'flex', alignItems: 'center', columnGap: '1em' }}>
       <input
         ref={convolverInput}
         id="reverbToggle"
@@ -71,7 +69,9 @@ export const ReverbEffect: FC<ReverbEffectProps> = ({ setConvolver }) => {
         type="checkbox"
         onChange={setCurrentConvolver}
       />
-      <h2><label htmlFor="reverbToggle">reverb</label></h2>
+      <label htmlFor="reverbToggle" style={{ cursor: "pointer" }}>
+        <h2>reverb</h2>
+      </label>
       <select ref={convolverSelect} onChange={setCurrentConvolver}>
         {Object.entries(convolvers).map(([ filename, convolver ], index) => {
           const key = getConvolverKey(index);

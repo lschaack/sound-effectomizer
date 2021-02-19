@@ -105,13 +105,13 @@ export const MicrophoneInput: FC<MicrophoneProps> = ({
   }, [micStream]); // eslint-disable-line
 
   return (
-    <div className={styles.outer}>
+    <button className={cx(styles.outer, 'gridButton')} tabIndex={0} onClick={toggleMicrophone}>
       <div className={styles.middle} ref={middle}>
-        <div className={cx(styles.inner, 'material-icons')} onClick={toggleMicrophone}>
+        <div className={cx(styles.inner, 'material-icons')}>
           {enabled ? 'mic' : 'mic_none'}
         </div>
       </div>
-    </div>
+    </button>
     // <div className={cx('centeredRow', styles.configRow)}>
     //   <input
     //     id="microphoneToggle"

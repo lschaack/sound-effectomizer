@@ -45,18 +45,6 @@ const MP3_SRCS = {
   // euuhuh, rruuuh, grrr, heaghh, wohh, sleepyBork,
 };
 
-const playOnKeydown: KeyboardEventHandler = event => {
-  const numKey = event.keyCode - 48;
-
-  if (numKey >= 0 && numKey < 10) {
-    const element = document.querySelector(
-      `.${styles.soundboard} > button:nth-of-type(${numKey})`
-    );
-
-    if (element instanceof HTMLElement) element.click();
-  }
-};
-
 export const App: FC = () => (
   <Context>
     <SoundEffectomizer />
@@ -67,7 +55,6 @@ export const App: FC = () => (
 const SoundEffectomizer: FC = () => {
   const { context } = useAudioContext();
   const { soundbites, addSoundbite, addSoundbitesFromUrlMap } = useSoundbiteContext();
-  // const [ soundbites, setSoundbites ] = useState<SoundbiteProps[]>([]);
 
   const { effectChain, outputAnalyser } = useSoundEffectsContext();
 
@@ -87,11 +74,10 @@ const SoundEffectomizer: FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <ThemePicker />
+        {/* <ThemePicker /> */}
         <Effectomizers />
         <div
           className={styles.soundboard}
-          // onKeyDown={playOnKeydown} // TODO: potentially re-enable
           tabIndex={-1}
         >
           <Oscilloscope analyser={outputAnalyser} />
