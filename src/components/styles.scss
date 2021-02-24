@@ -18,9 +18,8 @@ body {
   margin: 0;
   padding: 0;
 
-  overflow: hidden;
-
   background-color: var(--dark);
+  background-image: url('/static/tile.svg');
 }
 
 :global(.effectToggle) {
@@ -62,18 +61,30 @@ h2 {
 
   display: flex;
   justify-content: center;
-  margin: 1rem;
 }
 
 .content {
   height: 100vh;
-  max-height: 100vh;
   max-width: var(--app-max-width);
   width: 100%;
   display: flex;
+  justify-content: space-around;
 
   > div {
-    flex: 1 1;
+    // Bumped --dark a total of 9 each
+    background: rgba(#363F44, 0.7);
+    border-radius: 2rem;
+    padding: 2rem;
+    margin: 1rem;
+  }
+
+  > div:first-child {
+    flex: 0 0;
+  }
+
+  > div:last-child {
+    flex: 1 0;
+    max-width: 700px;
   }
 }
 
@@ -95,7 +106,6 @@ h2 {
 
   justify-items: center;
   align-items: center;
-  margin-top: 1rem;
   grid-gap: 1rem;
 
   &:focus {
