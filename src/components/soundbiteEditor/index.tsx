@@ -66,6 +66,14 @@ type SoundbiteEditorProps = {
    <input ref={stopInput} type="number" defaultValue="20000" />
    <button onMouseUp={handleChange}>trim</button> */
 
+const hideElement = (element: HTMLDivElement | null) => {
+  if (element) element.style.opacity = '0';
+};
+
+const showElement = (element: HTMLDivElement | null) => {
+  if (element) element.style.opacity = '1';
+};
+
 const getDragLeft = (
   elementStartingX: number,
   cursorStartingX: number,
@@ -85,6 +93,7 @@ export const SoundbiteEditor: FC<SoundbiteEditorProps> = ({ context, onChange })
 
   const trimStartHandle = useRef<HTMLDivElement>(null);
   const trimStopHandle = useRef<HTMLDivElement>(null);
+  const playbackLocationHandle = useRef<HTMLDivElement>(null);
   const trimBar = useRef<HTMLDivElement>(null);
 
   const [ isDraggingStart, setIsDraggingStart ] = useState(false);
@@ -98,16 +107,13 @@ export const SoundbiteEditor: FC<SoundbiteEditorProps> = ({ context, onChange })
   const getCurrentDragPosition = useCallback(
     getDragLeft.partial(
       dragStartElementX,
-      dragStartClientX,
-      -TRIM_BOUNDARY_WIDTH,
-      trimBar.current
-        ? trimBar.current.clientLeft + trimBar.current.clientWidth
-        : Infinity,
+      dragStartClientX
     ),
     [ dragStartElementX, dragStartClientX ]
   );
-  
+
   const startDraggingStart: MouseEventHandler = useCallback(e => {
+    hideElement(playbackLocationHandle.current);
     setDragStartClientX(e.clientX);
     setDragStartElementX(
       trimStartHandle.current
@@ -119,6 +125,7 @@ export const SoundbiteEditor: FC<SoundbiteEditorProps> = ({ context, onChange })
   }, [setIsDraggingStart]);
 
   const startDraggingStop: MouseEventHandler = useCallback(e => {
+    hideElement(playbackLocationHandle.current);
     setDragStartClientX(e.clientX);
     setDragStartElementX(
       trimStopHandle.current
@@ -136,6 +143,7 @@ export const SoundbiteEditor: FC<SoundbiteEditorProps> = ({ context, onChange })
     console.log('setting isDragging to false');
     stopDraggingStart();
     stopDraggingStop();
+    showElement(playbackLocationHandle.current);
   }, [stopDraggingStart, stopDraggingStop]);
 
   const trimSpecificBuffer = useMemo(
@@ -145,11 +153,51 @@ export const SoundbiteEditor: FC<SoundbiteEditorProps> = ({ context, onChange })
 
   const handleTrimChange: DragEventHandler<HTMLDivElement> = e => {
     if (isDraggingStart && trimStartHandle.current) {
-      trimStartHandle.current.style.left = `${getCurrentDragPosition(e.clientX)}px`;
+      // left-bounded by the edge of the playback bar,
+      // right-bounded by the stop handle (no negative duration)
+      // leave at least one TRIM_BOUNDARY_WIDTH between handles for playback location
+      const leftBound = -TRIM_BOUNDARY_WIDTH; // left
+      const rightBound = trimStopHandle.current
+        ? parseInt(getComputedStyle(trimStopHandle.current).left) - 2 * TRIM_BOUNDARY_WIDTH
+        : trimBar.current
+          ? trimBar.current.clientLeft + trimBar.current.clientWidth
+          : Infinity;
+      trimStartHandle.current.style.left = `${
+        getCurrentDragPosition(leftBound, rightBound, e.clientX)
+      }px`;
     }
 
     if (isDraggingStop && trimStopHandle.current) {
-      trimStopHandle.current.style.left = `${getCurrentDragPosition(e.clientX)}px`;
+      // left-bounded by the start handle (no negative duration),
+      // right-bounded by the edge of the playback bar
+      // leave at least one TRIM_BOUNDARY_WIDTH between handles for playback location
+      const leftBound = trimStartHandle.current
+        ? parseInt(getComputedStyle(trimStartHandle.current).left) + 2 * TRIM_BOUNDARY_WIDTH
+        : -TRIM_BOUNDARY_WIDTH;
+      const rightBound = trimBar.current
+        ? trimBar.current.clientLeft + trimBar.current.clientWidth
+        : Infinity;
+      trimStopHandle.current.style.left = `${
+        getCurrentDragPosition(leftBound, rightBound, e.clientX)
+      }px`;
+    }
+
+    // TODO: set playbackLocationHandle if trimStartHandle was moved left
+    // ensure playback location starts at least at the edge of trimStartHandle
+    if (playbackLocationHandle.current && trimStartHandle.current) {
+      const playbackLocationHandleLeft = parseInt(
+        getComputedStyle(playbackLocationHandle.current).left
+      );
+
+      const trimStartHandleLeft = parseInt(
+        getComputedStyle(trimStartHandle.current).left
+      );
+
+      if (playbackLocationHandleLeft < (trimStartHandleLeft + TRIM_BOUNDARY_WIDTH)) {
+        playbackLocationHandle.current.style.left = `${
+          trimStartHandleLeft + TRIM_BOUNDARY_WIDTH
+        }px`;
+      }
     }
   };
 
@@ -165,7 +213,10 @@ export const SoundbiteEditor: FC<SoundbiteEditorProps> = ({ context, onChange })
           onMouseDown={startDraggingStart}
           onMouseUp={stopDraggingStart}
         />
-        <div className={styles.playbackLocation} />
+        <div
+          ref={playbackLocationHandle}
+          className={styles.playbackLocation}
+        />
         <div
           ref={trimStopHandle}
           className={styles.trimBoundary}

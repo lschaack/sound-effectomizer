@@ -25,11 +25,14 @@ $trim-border-radius: 0.1rem;
     align-items: center;
 
     .playbackLocation {
+      opacity: 1;
       position: absolute;
       height: $trim-boundary-height;
       width: $trim-boundary-width;
       border-radius: $trim-border-radius;
       background-color: var(--primary);
+
+      transition: opacity 0.25s ease-in-out;
     }
 
     .trimBoundary {
