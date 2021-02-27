@@ -11,7 +11,7 @@ import { FileSelector } from './fileSelector';
 import { chainAudioNodes } from '../common/utils/audio';
 import { Oscilloscope } from './oscilloscope';
 import { MicrophoneInput } from './microphoneInput';
-// import { SoundbiteEditor } from './soundbite-editor';
+import { SoundbiteEditor } from './soundbiteEditor';
 
 import styles from './styles.scss';
 
@@ -54,7 +54,13 @@ export const App: FC = () => (
 // TODO: make this only handle input, separate effectChain
 const SoundEffectomizer: FC = () => {
   const { context } = useAudioContext();
-  const { soundbites, addSoundbite, addSoundbitesFromUrlMap } = useSoundbiteContext();
+  const {
+    soundbites,
+    addSoundbite,
+    addSoundbitesFromUrlMap,
+    currentSoundbite,
+    setCurrentSoundbite
+  } = useSoundbiteContext();
 
   const { effectChain, outputAnalyser } = useSoundEffectsContext();
 
@@ -85,34 +91,16 @@ const SoundEffectomizer: FC = () => {
           {soundbites.map((soundbite, index) =>
             <Soundbite
               key={`soundbite-${index}`}
-              onSelect={() => setCurrentBufferIndex(index)}
+              onSelect={setCurrentSoundbite}
               soundbite={soundbite}
             />)
           }
           <FileSelector context={context} onSelect={addSoundbite} />
-          {/* <SoundbiteEditor
+          <SoundbiteEditor
             context={context}
             buffer={soundbites[currentBufferIndex]?.buffer}
-            onChange={buffer => {
-              if (soundbites[currentBufferIndex]) {
-                console.log(
-                  'setting buffer with duration',
-                  soundbites[currentBufferIndex].buffer.duration,
-                  'to buffer with duration',
-                  buffer.duration
-                );
-
-                // soundbites[currentBufferIndex].buffer = buffer;
-                // setSoundbites(soundbites);
-                soundbites[currentBufferIndex].buffer = buffer;
-                setSoundbites(soundbites.map((soundbite, index) => (
-                  index === currentBufferIndex
-                    ? { ...soundbite, ...getSoundbiteProps(buffer) }
-                    : soundbite
-                )));
-              }
-            }}
-          /> */}
+            onChange={() => undefined}
+          />
         </div>
       </div>
     </div>

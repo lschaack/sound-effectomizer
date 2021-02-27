@@ -10,18 +10,20 @@ import styles from './styles.scss';
 
 export type SoundbiteProps = {
   soundbite: TSoundbite;
-  onSelect: () => void;
+  onSelect: (selected: TSoundbite) => void;
 };
 
 export const Soundbite: FC<SoundbiteProps> = ({
-  soundbite: { buffer, name }, onSelect
+  soundbite, onSelect
 }) => {
   const { context } = useAudioContext();
   const { effectChain } = useSoundEffectsContext();
   const source = useRef<AudioBufferSourceNode>();
 
+  const { buffer, name } = soundbite;
+
   const handleClick = () => {
-    onSelect();
+    onSelect(soundbite);
 
     if (context.state === 'suspended') context.resume();
 

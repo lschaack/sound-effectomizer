@@ -12,6 +12,8 @@ export type Soundbite = {
 type TSoundbiteContext = {
   soundbites: Soundbite[];
   updateSoundbites: StateSetter<Soundbite[]>;
+  currentSoundbite: Maybe<Soundbite>;
+  setCurrentSoundbite: StateSetter<Maybe<Soundbite>>;
   addSoundbite: (buffer?: AudioBuffer, name?: string) => void;
   addSoundbitesFromUrlMap: (nameToUrl: Record<string, string>) => void;
 };
@@ -19,6 +21,8 @@ type TSoundbiteContext = {
 const DEFAULT_SOUNDBITE_CONTEXT = {
   soundbites: [],
   updateSoundbites: () => undefined,
+  currentSoundbite: undefined,
+  setCurrentSoundbite: () => undefined,
   addSoundbite: () => undefined,
   addSoundbitesFromUrlMap: () => undefined,
 };
@@ -29,6 +33,7 @@ SoundbiteContext.displayName = 'SoundbiteContext';
 export const SoundbiteContextProvider: FC = ({ children }) => {
   const { context } = useAudioContext();
   const [ soundbites, updateSoundbites ] = useState<Soundbite[]>([]);
+  const [ currentSoundbite, setCurrentSoundbite ] = useState<Maybe<Soundbite>>();
 
   const addSoundbite: TSoundbiteContext['addSoundbite'] = (buffer, name) => {
     if (buffer) updateSoundbites(
@@ -50,7 +55,14 @@ export const SoundbiteContextProvider: FC = ({ children }) => {
 
   return (
     <SoundbiteContext.Provider
-      value={{ soundbites, updateSoundbites, addSoundbite, addSoundbitesFromUrlMap }}
+      value={{
+        soundbites,
+        updateSoundbites,
+        currentSoundbite,
+        setCurrentSoundbite,
+        addSoundbite,
+        addSoundbitesFromUrlMap
+      }}
     >
       {children}
     </SoundbiteContext.Provider>

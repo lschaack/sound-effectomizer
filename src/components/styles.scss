@@ -64,11 +64,8 @@ h2 {
 }
 
 .content {
-  height: 100vh;
-  max-width: var(--app-max-width);
   width: 100%;
   display: flex;
-  justify-content: space-around;
 
   > div {
     // Bumped --dark a total of 9 each
@@ -77,19 +74,43 @@ h2 {
     padding: 2rem;
     margin: 1rem;
   }
+}
 
-  > div:first-child {
-    flex: 0 0;
+@media (min-width: 0px) and (max-width: 903px) {
+  .content {
+    max-width: var(--app-max-width);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
+}
 
-  > div:last-child {
-    flex: 1 0;
-    max-width: 700px;
+@media screen and (min-width: 903px) {
+  .content {
+    max-width: var(--app-max-width);
+    display: flex;
+    justify-content: space-around;
+
+    > div:first-child {
+      flex: 0 0;
+    }
+
+    > div:last-child {
+      flex: 1 0;
+      max-width: 700px;
+    }
+
+    .soundboard {
+      align-self: flex-start;
+    }
   }
 }
 
 .soundboard {
   display: grid;
+  min-width: 400px;
+  width: max-content;
 
   grid-template-rows: repeat(
     auto-fill,
@@ -114,6 +135,10 @@ h2 {
 
   // > div:last-child, // TODO: re-enable when soundbite editor is back
   > canvas:first-child {
+    grid-column: 1 / -1;
+  }
+
+  > div:last-child {
     grid-column: 1 / -1;
   }
 }
