@@ -13,6 +13,65 @@ export class PitchNode extends AudioIO {
   type = 'PitchNode' as const;
   private context: AudioContext;
   private oscillator: CustomOscillatorNode;
+  private oscillatorOutput: GainNode;
+
+  constructor(context: AudioContext, options: PitchOptions) {
+    /********** Base instantiation **********/
+    super(context.createGain(), context.createGain());
+
+    this.context = context;
+
+    /********** Setup **********/
+    const leftDelay = context.createDelay();
+    
+    const { transposition, autoStart } = options;
+    this.oscillator = new CustomOscillatorNode(context, {
+      type: 'sawtooth',
+      frequency: getFrequencyFromTransposition(transposition),
+      autoStart: false
+    });
+
+    const leftOscillatorGain = context.createGain();
+    leftOscillatorGain.gain.value = WINDOW_SIZE;
+
+    this.oscillatorOutput = context.createGain();
+
+    /********** Connect **********/
+    this.oscillator.connect(this.oscillatorOutput);
+    this.oscillatorOutput.connect(leftOscillatorGain);
+    leftOscillatorGain.connect(leftDelay.delayTime);
+
+    this.input.connect(leftDelay);
+    leftDelay.connect(this.output);
+
+    /********** Set options **********/
+    if (autoStart ?? true) this.start();
+  }
+
+  set transposition(nextTransposition: number) {
+    const frequency = getFrequencyFromTransposition(nextTransposition);
+
+    this.oscillator.disconnect();
+    this.oscillator = new CustomOscillatorNode(this.context, {
+      type: 'sawtooth',
+      frequency
+    });
+    this.oscillator.connect(this.oscillatorOutput);
+  }
+
+  start() {
+    this.oscillator.start();
+  }
+
+  setOptions(options: PitchOptions) {
+    super.setOptions(options);
+  }
+}
+
+export class ComplexPitchNode extends AudioIO {
+  type = 'PitchNode' as const;
+  private context: AudioContext;
+  private oscillator: CustomOscillatorNode;
   private crossfade: CrossfadeNode;
   private phaseAdjust: DelayNode;
   private leftOscillatorOutput: GainNode;
