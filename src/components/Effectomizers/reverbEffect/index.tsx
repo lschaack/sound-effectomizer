@@ -11,6 +11,7 @@ import smallDrumRoom from 'assets/IMreverbs/Small Drum Room.wav';
 import rubyRoom from 'assets/IMreverbs/Ruby Room.wav';
 import { useAudioContext } from 'context/AudioContext';
 import { StateSetter } from 'context/types';
+import { useSoundEffectsContext } from 'context/SoundEffectsContext';
 
 const CONVOLVERS = {
   chateauDeLogneOutside,
@@ -34,21 +35,22 @@ const getConvolverKey = (index: number) => `convolver-${index}`;
 
 type ConvolverNodeMap = Record<string, ConvolverNode>;
 
-type ReverbEffectProps = {
-  setConvolver: StateSetter<Maybe<ConvolverNode>>;
-}
-
-export const ReverbEffect: FC<ReverbEffectProps> = ({ setConvolver }) => {
+export const ReverbEffect: FC = () => {
   const { context } = useAudioContext();
+  const { setConvolver } = useSoundEffectsContext();
   const [ convolvers, setConvolvers ] = useState<ConvolverNodeMap>({});
 
   const convolverInput = useRef<HTMLInputElement>(null);
   const convolverSelect = useRef<HTMLSelectElement>(null);
-  const setCurrentConvolver = () => setConvolver(
-    convolverInput.current?.checked
-      ? convolvers[convolverSelect.current?.value ?? '']
-      : undefined
-  );
+  const setCurrentConvolver = () => {
+    convolvers[convolverSelect.current?.value ?? ''].disconnect();
+
+    setConvolver(
+      convolverInput.current?.checked
+        ? convolvers[convolverSelect.current?.value ?? '']
+        : undefined
+    );
+  };
 
   // Load default reverbs
   useEffect(() => Object.entries(CONVOLVERS).forEach(([name, filename]) =>

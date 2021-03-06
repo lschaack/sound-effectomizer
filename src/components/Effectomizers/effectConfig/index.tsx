@@ -24,7 +24,7 @@ type AudioEffectConstructor = typeof FlangerNode
   | typeof TapeDelayNode
   | typeof VibratoNode;
 
-type TProps<Options, TConstructor extends AudioEffectConstructor, TResult extends AudioIO> = {
+type TProps<Options, TConstructor extends AudioEffectConstructor, TNode extends AudioIO> = {
   AudioEffectConstructor: TConstructor;
   effectName: string;
   defaultOptions: Options;
@@ -43,11 +43,13 @@ type TProps<Options, TConstructor extends AudioEffectConstructor, TResult extend
     name: keyof Options;
     value: string;
   }>;
-  onChange: (effectNode: Maybe<TResult>) => void;
+  onChange: (effectNode: Maybe<TNode>) => void;
+  effectNode: Maybe<TNode>;
 }
 
 export const EffectConfig = <Options extends {}, TConstructor extends AudioEffectConstructor, TResult extends AudioIO>({
   AudioEffectConstructor,
+  effectNode,
   onChange,
   defaultOptions,
   effectName,
@@ -59,23 +61,22 @@ export const EffectConfig = <Options extends {}, TConstructor extends AudioEffec
   const [ options, setOptions ] = useState(defaultOptions);
   const [ expanded, setExpanded ] = useState(false);
   const optionToggle = useRef<HTMLInputElement>(null);
-  const effectNode = useRef<TResult>();
 
   const toggleExpanded = () => setExpanded(!expanded);
 
   const handleOptionsChange = useCallback(
     () => {
-      if (!optionToggle.current?.checked) { // if option is unchecked, disable the node
-        effectNode.current = undefined;
+      if (!optionToggle.current?.checked) { // if option is unchecked, disable the effectNode
+        // FIXME: the bit of code intended to do this in sound effects context doesn't work—this is a bandaid
+        effectNode?.disconnect();
         onChange(undefined);
-      } else if (effectNode.current === undefined) { // create the node if undefined
-        effectNode.current = new AudioEffectConstructor(context, options as any) as any; // TODO: as any
-        onChange(effectNode.current as any); // TODO: as any
-      } else { // if the option is checked and the node is defined, modify in-place
-        effectNode.current?.setOptions(options as any); // TODO: as any
+      } else if (effectNode === undefined) { // create the effectNode if undefined
+        onChange(new AudioEffectConstructor(context, options as any) as any); // TODO: as any
+      } else { // if the option is checked and the effectNode is defined, modify in-place
+        effectNode?.setOptions(options as any); // TODO: as any
       }
     },
-    [onChange, AudioEffectConstructor, context, options]
+    [ effectNode, onChange, AudioEffectConstructor, context, options ]
   );
 
   useEffect(handleOptionsChange, [options]);

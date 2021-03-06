@@ -22,6 +22,7 @@ export const Soundbite: FC<SoundbiteProps> = ({
 
   const { buffer, name } = soundbite;
 
+  console.log('presumably re-making handleClick on rerender');
   const handleClick = () => {
     onSelect(soundbite);
 
@@ -29,11 +30,16 @@ export const Soundbite: FC<SoundbiteProps> = ({
 
     if (buffer) {
       source.current?.stop();
+      source.current?.disconnect();
 
       source.current = context.createBufferSource();
       source.current.buffer = buffer;
 
-      chainAudioNodes(source.current, effectChain, context.destination);
+      chainAudioNodes(
+        source.current,
+        effectChain,
+        context.destination
+      );
 
       source.current.start();
     }
@@ -43,11 +49,6 @@ export const Soundbite: FC<SoundbiteProps> = ({
     e.preventDefault();
     source.current?.stop();
   };
-
-  useEffect(() => {
-    source.current?.disconnect();
-    chainAudioNodes(source.current, effectChain, context.destination);
-  }, [effectChain]); // eslint-disable-line
 
   return (
     <button
