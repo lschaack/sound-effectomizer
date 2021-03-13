@@ -37,6 +37,7 @@ export class CustomOscillatorNode extends AudioIO {
     const { frequency, type, autoStart } = options;
     this.frequency = frequency ?? A4_FREQUENCY;
     this.type = type ?? 'sine';
+
     if (autoStart ?? true) this.start();
   }
 

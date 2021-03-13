@@ -11,7 +11,7 @@ export const normalizeFromRange = (min: number, max: number, input: number) =>
   (clamp(input, min, max) - min) / (max - min);
 
 export const getFrequencyFromTransposition = (transposition: number) => {
-  const t = normalizeToRange(-0.5, 0.5, transposition);
+  const t = normalizeToRange(-1, 1, transposition);
   // original definition from:
   // http://msp.ucsd.edu/techniques/v0.11/book-html/node115.html#fig07.22
   // f = (t - 1) * R / s

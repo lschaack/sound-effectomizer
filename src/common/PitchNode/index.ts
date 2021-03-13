@@ -9,8 +9,8 @@ export type PitchOptions = {
   autoStart?: boolean;
 }
 
-export class PitchNode extends AudioIO {
-  type = 'PitchNode' as const;
+export class SimplePitchNode extends AudioIO {
+  type = 'SimplePitchNode' as const;
   private context: AudioContext;
   private oscillator: CustomOscillatorNode;
   private oscillatorOutput: GainNode;
@@ -54,7 +54,7 @@ export class PitchNode extends AudioIO {
     this.oscillator.disconnect();
     this.oscillator = new CustomOscillatorNode(this.context, {
       type: 'sawtooth',
-      frequency
+      frequency,
     });
     this.oscillator.connect(this.oscillatorOutput);
   }
@@ -68,14 +68,13 @@ export class PitchNode extends AudioIO {
   }
 }
 
-export class ComplexPitchNode extends AudioIO {
+export class PitchNode extends AudioIO {
   type = 'PitchNode' as const;
   private context: AudioContext;
-  private oscillator: CustomOscillatorNode;
+  private leftSimplePitchNode: SimplePitchNode;
+  private rightSimplePitchNode: SimplePitchNode;
   private crossfade: CrossfadeNode;
   private phaseAdjust: DelayNode;
-  private leftOscillatorOutput: GainNode;
-  private rightOscillatorOutput: GainNode;
 
   constructor(context: AudioContext, options: PitchOptions) {
     /********** Base instantiation **********/
@@ -84,71 +83,58 @@ export class ComplexPitchNode extends AudioIO {
     this.context = context;
 
     /********** Setup **********/
-    const leftDelay = context.createDelay();
-    const rightDelay = context.createDelay();
-    
+    this.leftSimplePitchNode = new SimplePitchNode(context, { ...options, autoStart: false });
+    this.rightSimplePitchNode = new SimplePitchNode(context, { ...options, autoStart: false });
+
     const { transposition, autoStart } = options;
-    this.oscillator = new CustomOscillatorNode(context, {
-      type: 'sawtooth',
-      frequency: getFrequencyFromTransposition(transposition),
-      autoStart: false
-    });
 
     this.phaseAdjust = context.createDelay();
 
-    const leftOscillatorGain = context.createGain();
-    leftOscillatorGain.gain.value = WINDOW_SIZE;
-    const rightOscillatorGain = context.createGain();
-    rightOscillatorGain.gain.value = WINDOW_SIZE;
-
-    this.leftOscillatorOutput = context.createGain();
-    this.rightOscillatorOutput = context.createGain();
-
     this.crossfade = new CrossfadeNode(context, {
-      leftInput: leftDelay,
-      rightInput: rightDelay,
+      leftInput: this.leftSimplePitchNode.output,
+      rightInput: this.rightSimplePitchNode.output,
       autoStart: false,
     });
 
     /********** Connect **********/
-    this.oscillator.connect(this.leftOscillatorOutput);
-    this.oscillator.connect(this.phaseAdjust);
-    this.phaseAdjust.connect(this.rightOscillatorOutput);
+    this.input.connect(this.leftSimplePitchNode.input);
+    this.input.connect(this.phaseAdjust);
+    this.phaseAdjust.connect(this.rightSimplePitchNode.input);
 
-    this.leftOscillatorOutput.connect(leftOscillatorGain);
-    this.rightOscillatorOutput.connect(rightOscillatorGain);
-
-    leftOscillatorGain.connect(leftDelay.delayTime);
-    rightOscillatorGain.connect(rightDelay.delayTime);
-
-    this.input.connect(leftDelay);
-    this.input.connect(rightDelay);
-
-    this.crossfade.connect(this.output);
+    this.crossfade.output.connect(this.output);
+    // this.leftSimplePitchNode.output.connect(this.output);
+    // this.rightSimplePitchNode.output.connect(this.output);
 
     /********** Set options **********/
+    /**
+     * FIXME: when transposition is set here, it is also set on the left and
+     * right simple pitch nodes, which starts their corresponding oscillators
+     * this.start() is called below, it also calls start on the oscillators,
+     * throwing the error
+     */
+    this.transposition = transposition; // TODO: ...
+
     if (autoStart ?? true) this.start();
   }
 
   set transposition(nextTransposition: number) {
     const frequency = getFrequencyFromTransposition(nextTransposition);
 
+    // phase adjust delay should always be half a phase
+    // crossfade frequency should always match pitch shift frequency
+    const halfPhase = 0.5 / frequency;
     // const halfPhase = WINDOW_SIZE / 2;
     // const halfPhase = frequency / 2;
-    const halfPhase = 0.5 / frequency;
     this.phaseAdjust.delayTime.value = halfPhase;
 
-    this.oscillator.disconnect();
-    this.oscillator = new CustomOscillatorNode(this.context, {
-      type: 'sawtooth',
-      frequency
-    });
-    this.oscillator.connect(this.leftOscillatorOutput);
-    this.oscillator.connect(this.phaseAdjust);
+    this.crossfade.frequency = frequency;
+    this.leftSimplePitchNode.transposition = nextTransposition;
+    this.rightSimplePitchNode.transposition = nextTransposition;
   }
 
   start() {
-    this.oscillator.start();
+    // starting pitch nodes here will throw an error since they're started with
+    // each set transposition() call
     this.crossfade.start();
   }
 

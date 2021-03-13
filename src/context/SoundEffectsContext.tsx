@@ -101,24 +101,14 @@ export const SoundEffectsContextProvider: FC = ({ children }) => {
    * 4. re-enable reverb -> flanger still enabled, reverb apparently not
    * 5. disable flanger -> reverb now enabled
    */
-  const getEffectChain = () => {
-    console.log('in getEffectChain with nodes:\n', {
-      pitch,
-      vibrato,
-      delay,
-      flanger,
-      convolver,
-    });
-
-    return chainAudioNodes(
-      pitch,
-      vibrato,
-      delay,
-      flanger,
-      convolver,
-      outputAnalyser
-    );
-  };
+  const getEffectChain = () => chainAudioNodes(
+    pitch,
+    vibrato,
+    delay,
+    flanger,
+    convolver,
+    outputAnalyser
+  );
 
   // TODO: effectChain doesn't seem to update on initial render, making this necessary
   const [ effectChain, setEffectChain ] = useState<Maybe<AudioIO>>(getEffectChain());

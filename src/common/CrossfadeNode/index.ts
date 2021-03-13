@@ -16,12 +16,9 @@ export class CrossfadeNode extends AudioIO {
 
   constructor(context: AudioContext, options: CrossfadeOptions) {
     /********** Base instantiation **********/
-    const IO = context.createGain(); // this node acts as both input and output
-    super(IO, IO);
+    super(context.createGain(), context.createGain());
     
     /********** Setup **********/
-    const output = context.createGain();
-
     this.oscillator = new CustomOscillatorNode(context, options);
     const leftPhaseAdjuster = context.createDelay();
     const rightPhaseAdjuster = context.createDelay();
@@ -50,8 +47,8 @@ export class CrossfadeNode extends AudioIO {
      * TODO: Figure out what the next line means again
      * TODO: run w/ one node, adjust until muted during gap discontinuity
      */
-    this.leftGain.connect(output);
-    this.rightGain.connect(output);
+    this.leftGain.connect(this.output);
+    this.rightGain.connect(this.output);
 
     /********** Set options **********/
     const { leftInput, rightInput, frequency, autoStart } = options;
