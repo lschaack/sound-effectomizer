@@ -4,6 +4,8 @@ import { CustomOscillatorNode } from "common/CustomOscillatorNode";
 import { CrossfadeNode } from "common/CrossfadeNode";
 import { WINDOW_SIZE } from "common/contants";
 
+const START_DELAY_SECONDS = 0.25;
+
 export type PitchOptions = {
   transposition: number;
   autoStart?: boolean;
@@ -22,7 +24,7 @@ export class SimplePitchNode extends AudioIO {
     this.context = context;
 
     /********** Setup **********/
-    const leftDelay = context.createDelay();
+    const delay = context.createDelay();
     
     const { transposition, autoStart } = options;
     this.oscillator = new CustomOscillatorNode(context, {
@@ -31,36 +33,32 @@ export class SimplePitchNode extends AudioIO {
       autoStart: false
     });
 
-    const leftOscillatorGain = context.createGain();
-    leftOscillatorGain.gain.value = WINDOW_SIZE;
+    const oscillatorGain = context.createGain();
+    oscillatorGain.gain.value = WINDOW_SIZE;
 
     this.oscillatorOutput = context.createGain();
 
     /********** Connect **********/
     this.oscillator.connect(this.oscillatorOutput);
-    this.oscillatorOutput.connect(leftOscillatorGain);
-    leftOscillatorGain.connect(leftDelay.delayTime);
+    this.oscillatorOutput.connect(oscillatorGain);
+    oscillatorGain.connect(delay.delayTime);
 
-    this.input.connect(leftDelay);
-    leftDelay.connect(this.output);
+    this.input.connect(delay);
+    delay.connect(this.output);
 
     /********** Set options **********/
-    if (autoStart ?? true) this.start();
+    if (autoStart ?? true) this.start(context.currentTime + START_DELAY_SECONDS);
   }
 
   set transposition(nextTransposition: number) {
     const frequency = getFrequencyFromTransposition(nextTransposition);
 
-    this.oscillator.disconnect();
-    this.oscillator = new CustomOscillatorNode(this.context, {
-      type: 'sawtooth',
-      frequency,
-    });
+    this.oscillator.frequency = frequency;
     this.oscillator.connect(this.oscillatorOutput);
   }
 
-  start() {
-    this.oscillator.start();
+  start(when = 0) {
+    this.oscillator.start(when);
   }
 
   setOptions(options: PitchOptions) {
@@ -102,19 +100,11 @@ export class PitchNode extends AudioIO {
     this.phaseAdjust.connect(this.rightSimplePitchNode.input);
 
     this.crossfade.output.connect(this.output);
-    // this.leftSimplePitchNode.output.connect(this.output);
-    // this.rightSimplePitchNode.output.connect(this.output);
 
     /********** Set options **********/
-    /**
-     * FIXME: when transposition is set here, it is also set on the left and
-     * right simple pitch nodes, which starts their corresponding oscillators
-     * this.start() is called below, it also calls start on the oscillators,
-     * throwing the error
-     */
-    this.transposition = transposition; // TODO: ...
+    this.transposition = transposition;
 
-    if (autoStart ?? true) this.start();
+    if (autoStart ?? true) this.start(context.currentTime + START_DELAY_SECONDS);
   }
 
   set transposition(nextTransposition: number) {
@@ -132,10 +122,10 @@ export class PitchNode extends AudioIO {
     this.rightSimplePitchNode.transposition = nextTransposition;
   }
 
-  start() {
-    // starting pitch nodes here will throw an error since they're started with
-    // each set transposition() call
-    this.crossfade.start();
+  start(when = 0) {
+    this.leftSimplePitchNode.start(when);
+    this.rightSimplePitchNode.start(when);
+    this.crossfade.start(when);
   }
 
   setOptions(options: PitchOptions) {

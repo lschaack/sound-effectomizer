@@ -22,7 +22,6 @@ export const Soundbite: FC<SoundbiteProps> = ({
 
   const { buffer, name } = soundbite;
 
-  console.log('presumably re-making handleClick on rerender');
   const handleClick = () => {
     onSelect(soundbite);
 

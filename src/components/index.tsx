@@ -96,11 +96,11 @@ const SoundEffectomizer: FC = () => {
             />)
           }
           <FileSelector context={context} onSelect={addSoundbite} />
-          <SoundbiteEditor
+          {/* <SoundbiteEditor
             context={context}
             buffer={soundbites[currentBufferIndex]?.buffer}
             onChange={() => undefined}
-          />
+          /> */}
         </div>
       </div>
     </div>

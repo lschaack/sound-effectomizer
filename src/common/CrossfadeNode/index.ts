@@ -16,15 +16,24 @@ export class CrossfadeNode extends AudioIO {
 
   constructor(context: AudioContext, options: CrossfadeOptions) {
     /********** Base instantiation **********/
-    super(context.createGain(), context.createGain());
+    const IO = context.createGain(); // this node acts as both input and output
+    super(IO, IO);
     
     /********** Setup **********/
     this.oscillator = new CustomOscillatorNode(context, options);
-    const leftPhaseAdjuster = context.createDelay();
-    const rightPhaseAdjuster = context.createDelay();
+    // left needs nothing
+    // right needs to go to a -1 gain which is joined w/a constant source 1 to
+    // "reverse" the signal on the same range
+    const rightSignalInverter = context.createGain();
+    // invert the signal to run in reverse on a range of [-1, 0]
+    rightSignalInverter.gain.value = -1;
+    // when joined w/reverse signal inverter output, shift its range to [0, 1]
+    const rightRangeShifter = context.createConstantSource();
+    rightRangeShifter.start();
 
     const leftOscillatorOutput = context.createGain();
     const rightOscillatorOutput = context.createGain();
+    const rightJoiner = context.createGain();
 
     this.leftGain = context.createGain();
     this.rightGain = context.createGain();
@@ -35,10 +44,13 @@ export class CrossfadeNode extends AudioIO {
 
     /********** Connect **********/
     // left/right inputs connect when options are set (below)
-    this.oscillator.connect(leftPhaseAdjuster);
-    leftPhaseAdjuster.connect(leftOscillatorOutput);
-    this.oscillator.connect(rightPhaseAdjuster);
-    rightPhaseAdjuster.connect(rightOscillatorOutput);
+    this.oscillator.connect(leftOscillatorOutput);
+    this.oscillator.connect(rightSignalInverter);
+    // if I'm right (which...probably not) then this should effectively invert
+    // the oscillator signal to run "backwards" on the same range ([0, 1])
+    rightSignalInverter.connect(rightJoiner);
+    rightRangeShifter.connect(rightJoiner);
+    rightJoiner.connect(rightOscillatorOutput);
 
     leftOscillatorOutput.connect(this.leftGain.gain);
     rightOscillatorOutput.connect(this.rightGain.gain);
@@ -74,7 +86,7 @@ export class CrossfadeNode extends AudioIO {
     this.oscillator.frequency = nextFrequency;
   }
 
-  start() {
-    this.oscillator.start();
+  start(when = 0) {
+    this.oscillator.start(when);
   }
 }

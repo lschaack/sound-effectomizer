@@ -93,14 +93,6 @@ export const SoundEffectsContextProvider: FC = ({ children }) => {
   const setPitch = getEffectStateSetter('pitch');
   const setVibrato = getEffectStateSetter('vibrato');
 
-  /**
-   * FIXME: Steps to reproduce issue:
-   * 1. enable reverb, check enabled w/soundbite
-   * 2. enable flanger, check both enabled w/soundbite
-   * 3. disable reverb, check flanger enabled w/soundbite
-   * 4. re-enable reverb -> flanger still enabled, reverb apparently not
-   * 5. disable flanger -> reverb now enabled
-   */
   const getEffectChain = () => chainAudioNodes(
     pitch,
     vibrato,

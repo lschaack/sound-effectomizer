@@ -49,7 +49,7 @@ export class CustomOscillatorNode extends AudioIO {
     this.oscillator.type = nextType;
   }
 
-  start() {
-    this.oscillator.start();
+  start(when = 0) {
+    this.oscillator.start(when);
   }
 }
